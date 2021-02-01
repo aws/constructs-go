@@ -1,11 +1,7 @@
-## My Project
+## constructrs-go
 
-TODO: Fill this README out!
+Golang bindings for [constructs](https://github.com/aws/constructs)
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
 
 ## Security
 
