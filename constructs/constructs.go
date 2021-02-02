@@ -3,7 +3,7 @@ package constructs
 
 import (
 	_jsii_ "github.com/aws/jsii-runtime-go"
-	_init_ "github.com/aws/constructs-go/constructs/jsii"
+	_init_ "github.com/aws/constructs-go/constructs/v3/jsii"
 	"reflect"
 )
 
