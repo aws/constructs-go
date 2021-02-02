@@ -12,6 +12,6 @@ var once sync.Once
 func Initialize() {
 	once.Do(func(){
 		// Load this library into the kernel
-		rt.Load("constructs", "3.3.1", tarball)
+		rt.Load("constructs", "3.3.2", tarball)
 	})
 }
