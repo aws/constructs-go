@@ -2,43 +2,51 @@
 package constructs
 
 import (
-	_jsii_ "github.com/aws/jsii-runtime-go"
 	_init_ "github.com/aws/constructs-go/constructs/v3/jsii"
-	"reflect"
+	_jsii_ "github.com/aws/jsii-runtime-go"
 )
-
-// Class interface
-type ConstructIface interface {
-	IConstructIface
-	OnPrepare()
-	OnSynthesize(session ISynthesisSessionIface)
-	OnValidate() []string
-	ToString() string
-}
 
 // Represents the building block of the construct graph.
 //
 // All constructs besides the root construct must be created within the scope of
 // another construct.
-// Struct proxy
-type Construct struct {
+type Construct interface {
+	IConstruct
+	OnPrepare()
+	OnSynthesize(session ISynthesisSession)
+	OnValidate() []string
+	ToString() string
+}
+
+// The jsii proxy struct for Construct
+type construct struct {
+	iConstruct // implements constructs.IConstruct
 }
 
 // Creates a new construct node.
-func NewConstruct(scope ConstructIface, id string, options ConstructOptionsIface) ConstructIface {
+func NewConstruct(scope Construct, id string, options ConstructOptions) Construct {
 	_init_.Initialize()
-	self := Construct{}
+	c := construct{}
+
 	_jsii_.Create(
 		"constructs.Construct",
 		[]interface{}{scope, id, options},
 		[]_jsii_.FQN{"constructs.IConstruct"},
 		[]_jsii_.Override{},
-		&self,
+		&c,
 	)
-	return &self
+	return &c
 }
 
-func (c *Construct) OnPrepare() {
+// Perform final modifications before synthesis.
+//
+// This method can be implemented by derived constructs in order to perform
+// final changes before synthesis. prepare() will be called after child
+// constructs have been prepared.
+//
+// This is an advanced framework feature. Only use this if you
+// understand the implications.
+func (c *construct) OnPrepare() {
 	var returns interface{}
 	_jsii_.Invoke(
 		c,
@@ -46,11 +54,14 @@ func (c *Construct) OnPrepare() {
 		[]interface{}{},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (c *Construct) OnSynthesize(session ISynthesisSessionIface) {
+// Allows this construct to emit artifacts into the cloud assembly during synthesis.
+//
+// This method is usually implemented by framework-level constructs such as `Stack` and `Asset`
+// as they participate in synthesizing the cloud assembly.
+func (c *construct) OnSynthesize(session ISynthesisSession) {
 	var returns interface{}
 	_jsii_.Invoke(
 		c,
@@ -58,11 +69,18 @@ func (c *Construct) OnSynthesize(session ISynthesisSessionIface) {
 		[]interface{}{session},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (c *Construct) OnValidate() []string {
+// Validate the current construct.
+//
+// This method can be implemented by derived constructs in order to perform
+// validation logic. It is called on all constructs before synthesis.
+//
+// Returns: An array of validation error messages, or an empty array if there the construct is valid.
+// Deprecated: use `Node.addValidation()` to subscribe validation functions on this construct
+// instead of overriding this method.
+func (c *construct) OnValidate() []string {
 	var returns []string
 	_jsii_.Invoke(
 		c,
@@ -70,14 +88,12 @@ func (c *Construct) OnValidate() []string {
 		[]interface{}{},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*string)(nil)).Elem(): reflect.TypeOf((*string)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (c *Construct) ToString() string {
+// Returns a string representation of this construct.
+func (c *construct) ToString() string {
 	var returns string
 	_jsii_.Invoke(
 		c,
@@ -85,18 +101,17 @@ func (c *Construct) ToString() string {
 		[]interface{}{},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-// Class interface
-type ConstructMetadataIface interface {
+// Metadata keys used by constructs.
+type ConstructMetadata interface {
 }
 
-// Metadata keys used by constructs.
-// Struct proxy
-type ConstructMetadata struct {
+// The jsii proxy struct for ConstructMetadata
+type constructMetadata struct {
+	_ byte // padding
 }
 
 func ConstructMetadata_DisableStackTraceInMetadata() string {
@@ -106,7 +121,6 @@ func ConstructMetadata_DisableStackTraceInMetadata() string {
 		"constructs.ConstructMetadata",
 		"DISABLE_STACK_TRACE_IN_METADATA",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
@@ -118,7 +132,6 @@ func ConstructMetadata_ErrorMetadataKey() string {
 		"constructs.ConstructMetadata",
 		"ERROR_METADATA_KEY",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
@@ -130,7 +143,6 @@ func ConstructMetadata_InfoMetadataKey() string {
 		"constructs.ConstructMetadata",
 		"INFO_METADATA_KEY",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
@@ -142,96 +154,44 @@ func ConstructMetadata_WarningMetadataKey() string {
 		"constructs.ConstructMetadata",
 		"WARNING_METADATA_KEY",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
-}
-
-// ConstructOptionsIface is the public interface for the custom type ConstructOptions
-type ConstructOptionsIface interface {
-	GetNodeFactory() INodeFactoryIface
 }
 
 // Options for creating constructs.
-// Struct proxy
 type ConstructOptions struct {
 	// A factory for attaching `Node`s to the construct.
-	NodeFactory INodeFactoryIface `json:"nodeFactory"`
+	NodeFactory INodeFactory `json:"nodeFactory"`
 }
-
-func (c *ConstructOptions) GetNodeFactory() INodeFactoryIface {
-	var returns INodeFactoryIface
-	_jsii_.Get(
-		c,
-		"nodeFactory",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*INodeFactoryIface)(nil)).Elem(): reflect.TypeOf((*INodeFactory)(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
 
 // In what order to return constructs.
 type ConstructOrder string
 
 const (
-	ConstructOrderPreorder ConstructOrder = "PREORDER"
-	ConstructOrderPostorder ConstructOrder = "POSTORDER"
+	ConstructOrder_PREORDER ConstructOrder = "PREORDER"
+	ConstructOrder_POSTORDER ConstructOrder = "POSTORDER"
 )
 
-// DependencyIface is the public interface for the custom type Dependency
-type DependencyIface interface {
-	GetSource() IConstructIface
-	GetTarget() IConstructIface
-}
-
 // A single dependency.
-// Struct proxy
 type Dependency struct {
 	// Source the dependency.
-	Source IConstructIface `json:"source"`
+	Source IConstruct `json:"source"`
 	// Target of the dependency.
-	Target IConstructIface `json:"target"`
+	Target IConstruct `json:"target"`
 }
-
-func (d *Dependency) GetSource() IConstructIface {
-	var returns IConstructIface
-	_jsii_.Get(
-		d,
-		"source",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
-func (d *Dependency) GetTarget() IConstructIface {
-	var returns IConstructIface
-	_jsii_.Get(
-		d,
-		"target",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
 
 // Represents an Aspect.
-type IAspectIface interface {
+type IAspect interface {
 	// All aspects can visit an IConstruct.
-	Visit(node IConstructIface)
+	Visit(node IConstruct)
 }
 
-type IAspect struct {}
+// The jsii proxy for IAspect
+type iAspect struct {
+	_ byte // padding
+}
 
-func (i *IAspect) Visit(node IConstructIface) {
+func (i *iAspect) Visit(node IConstruct) {
 	var returns interface{}
 	_jsii_.Invoke(
 		i,
@@ -239,35 +199,37 @@ func (i *IAspect) Visit(node IConstructIface) {
 		[]interface{}{node},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
 // Represents a construct.
-type IConstructIface interface {
+type IConstruct interface {
 }
 
-type IConstruct struct {}
+// The jsii proxy for IConstruct
+type iConstruct struct {
+	_ byte // padding
+}
 
 // A factory for attaching `Node`s to the construct.
-type INodeFactoryIface interface {
+type INodeFactory interface {
 	// Returns a new `Node` associated with `host`.
-	CreateNode(host ConstructIface, scope IConstructIface, id string) NodeIface
+	CreateNode(host Construct, scope IConstruct, id string) Node
 }
 
-type INodeFactory struct {}
+// The jsii proxy for INodeFactory
+type iNodeFactory struct {
+	_ byte // padding
+}
 
-func (i *INodeFactory) CreateNode(host ConstructIface, scope IConstructIface, id string) NodeIface {
-	var returns NodeIface
+func (i *iNodeFactory) CreateNode(host Construct, scope IConstruct, id string) Node {
+	var returns Node
 	_jsii_.Invoke(
 		i,
 		"createNode",
 		[]interface{}{host, scope, id},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*NodeIface)(nil)).Elem(): reflect.TypeOf((*Node)(nil)).Elem(),
-		},
 	)
 	return returns
 }
@@ -275,26 +237,28 @@ func (i *INodeFactory) CreateNode(host ConstructIface, scope IConstructIface, id
 // Represents a single session of synthesis.
 //
 // Passed into `construct.onSynthesize()` methods.
-type ISynthesisSessionIface interface {
+type ISynthesisSession interface {
 	// The output directory for this synthesis session.
-	GetOutdir() string
+	Outdir() string
 }
 
-type ISynthesisSession struct {}
+// The jsii proxy for ISynthesisSession
+type iSynthesisSession struct {
+	_ byte // padding
+}
 
-func (i *ISynthesisSession) GetOutdir() string {
+func (i *iSynthesisSession) Outdir() string {
 	var returns string
 	_jsii_.Get(
 		i,
 		"outdir",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
 // Implement this interface in order for the construct to be able to validate itself.
-type IValidationIface interface {
+type IValidation interface {
 	// Validate the current construct.
 	//
 	// This method can be implemented by derived constructs in order to perform
@@ -304,9 +268,12 @@ type IValidationIface interface {
 	Validate() []string
 }
 
-type IValidation struct {}
+// The jsii proxy for IValidation
+type iValidation struct {
+	_ byte // padding
+}
 
-func (i *IValidation) Validate() []string {
+func (i *iValidation) Validate() []string {
 	var returns []string
 	_jsii_.Invoke(
 		i,
@@ -314,22 +281,11 @@ func (i *IValidation) Validate() []string {
 		[]interface{}{},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*string)(nil)).Elem(): reflect.TypeOf((*string)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-// MetadataEntryIface is the public interface for the custom type MetadataEntry
-type MetadataEntryIface interface {
-	GetData() interface{}
-	GetType() string
-	GetTrace() []string
-}
-
 // An entry in the construct metadata table.
-// Struct proxy
 type MetadataEntry struct {
 	// The data.
 	Data interface{} `json:"data"`
@@ -342,311 +298,180 @@ type MetadataEntry struct {
 	Trace []string `json:"trace"`
 }
 
-func (m *MetadataEntry) GetData() interface{} {
-	var returns interface{}
-	_jsii_.Get(
-		m,
-		"data",
-		&returns,
-		map[reflect.Type]reflect.Type{},
-	)
-	return returns
-}
-
-func (m *MetadataEntry) GetType() string {
-	var returns string
-	_jsii_.Get(
-		m,
-		"type",
-		&returns,
-		map[reflect.Type]reflect.Type{},
-	)
-	return returns
-}
-
-func (m *MetadataEntry) GetTrace() []string {
-	var returns []string
-	_jsii_.Get(
-		m,
-		"trace",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*string)(nil)).Elem(): reflect.TypeOf((*string)(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
-
-// Class interface
-type NodeIface interface {
-	GetAddr() string
-	GetChildren() []IConstructIface
-	GetDependencies() []DependencyIface
-	GetId() string
-	GetLocked() bool
-	GetMetadata() []MetadataEntryIface
-	GetPath() string
-	GetRoot() IConstructIface
-	GetScopes() []IConstructIface
-	GetUniqueId() string
-	GetScope() IConstructIface
-	GetDefaultChild() IConstructIface
-	SetDefaultChild(val IConstructIface)
-	AddDependency(dependencies IConstructIface)
+// Represents the construct node in the scope tree.
+type Node interface {
+	Addr() string
+	Children() []IConstruct
+	DefaultChild() IConstruct
+	SetDefaultChild(val IConstruct)
+	Dependencies() []Dependency
+	Id() string
+	Locked() bool
+	Metadata() []MetadataEntry
+	Path() string
+	Root() IConstruct
+	Scope() IConstruct
+	Scopes() []IConstruct
+	UniqueId() string
+	AddDependency(dependencies IConstruct)
 	AddError(message string)
 	AddInfo(message string)
 	AddMetadata(type_ string, data interface{}, fromFunction interface{})
-	AddValidation(validation IValidationIface)
+	AddValidation(validation IValidation)
 	AddWarning(message string)
-	ApplyAspect(aspect IAspectIface)
-	FindAll(order ConstructOrder) []IConstructIface
-	FindChild(id string) IConstructIface
+	ApplyAspect(aspect IAspect)
+	FindAll(order ConstructOrder) []IConstruct
+	FindChild(id string) IConstruct
 	Prepare()
 	SetContext(key string, value interface{})
-	Synthesize(options SynthesisOptionsIface)
-	TryFindChild(id string) IConstructIface
+	Synthesize(options SynthesisOptions)
+	TryFindChild(id string) IConstruct
 	TryGetContext(key string) interface{}
 	TryRemoveChild(childName string) bool
-	Validate() []ValidationErrorIface
+	Validate() []ValidationError
 }
 
-// Represents the construct node in the scope tree.
-// Struct proxy
-type Node struct {
-	// Returns an opaque tree-unique address for this construct.
-	//
-	// Addresses are 42 characters hexadecimal strings. They begin with "c8"
-	// followed by 40 lowercase hexadecimal characters (0-9a-f).
-	//
-	// Addresses are calculated using a SHA-1 of the components of the construct
-	// path.
-	//
-	// To enable refactorings of construct trees, constructs with the ID `Default`
-	// will be excluded from the calculation. In those cases constructs in the
-	// same tree may have the same addreess.
-	//
-	// TODO: EXAMPLE
-	//
-	Addr string `json:"addr"`
-	// All direct children of this construct.
-	Children []IConstructIface `json:"children"`
-	// Return all dependencies registered on this node or any of its children.
-	Dependencies []DependencyIface `json:"dependencies"`
-	// The id of this construct within the current scope.
-	//
-	// This is a a scope-unique id. To obtain an app-unique id for this construct, use `uniqueId`.
-	Id string `json:"id"`
-	// Returns true if this construct or the scopes in which it is defined are locked.
-	Locked bool `json:"locked"`
-	// An immutable array of metadata objects associated with this construct.
-	//
-	// This can be used, for example, to implement support for deprecation notices, source mapping, etc.
-	Metadata []MetadataEntryIface `json:"metadata"`
-	// The full, absolute path of this construct in the tree.
-	//
-	// Components are separated by '/'.
-	Path string `json:"path"`
-	// Returns the root of the construct tree.
-	//
-	// Returns: The root of the construct tree.
-	Root IConstructIface `json:"root"`
-	// All parent scopes of this construct.
-	//
-	// Returns: a list of parent scopes. The last element in the list will always
-	// be the current construct and the first element will be the root of the
-	// tree.
-	Scopes []IConstructIface `json:"scopes"`
-	// A tree-global unique alphanumeric identifier for this construct.
-	//
-	// Includes
-	// all components of the tree.
-	// Deprecated: please avoid using this property and use `uid` instead. This
-	// algorithm uses MD5, which is not FIPS-complient and also excludes the
-	// identity of the root construct from the calculation.
-	UniqueId string `json:"uniqueId"`
-	// Returns the scope in which this construct is defined.
-	//
-	// The value is `undefined` at the root of the construct scope tree.
-	Scope IConstructIface `json:"scope"`
-	// Returns the child construct that has the id `Default` or `Resource"`.
-	//
-	// This is usually the construct that provides the bulk of the underlying functionality.
-	// Useful for modifications of the underlying construct that are not available at the higher levels.
-	// Override the defaultChild property.
-	//
-	// This should only be used in the cases where the correct
-	// default child is not named 'Resource' or 'Default' as it
-	// should be.
-	//
-	// If you set this to undefined, the default behavior of finding
-	// the child named 'Resource' or 'Default' will be used.
-	//
-	// Returns: a construct or undefined if there is no default child
-	DefaultChild IConstructIface `json:"defaultChild"`
+// The jsii proxy struct for Node
+type node struct {
+	_ byte // padding
 }
 
-func (n *Node) GetAddr() string {
+func (n *node) Addr() string {
 	var returns string
 	_jsii_.Get(
 		n,
 		"addr",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) GetChildren() []IConstructIface {
-	var returns []IConstructIface
+func (n *node) Children() []IConstruct {
+	var returns []IConstruct
 	_jsii_.Get(
 		n,
 		"children",
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) GetDependencies() []DependencyIface {
-	var returns []DependencyIface
+func (n *node) DefaultChild() IConstruct {
+	var returns IConstruct
+	_jsii_.Get(
+		n,
+		"defaultChild",
+		&returns,
+	)
+	return returns
+}
+
+func (n *node) Dependencies() []Dependency {
+	var returns []Dependency
 	_jsii_.Get(
 		n,
 		"dependencies",
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*DependencyIface)(nil)).Elem(): reflect.TypeOf((*Dependency)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) GetId() string {
+func (n *node) Id() string {
 	var returns string
 	_jsii_.Get(
 		n,
 		"id",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) GetLocked() bool {
+func (n *node) Locked() bool {
 	var returns bool
 	_jsii_.Get(
 		n,
 		"locked",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) GetMetadata() []MetadataEntryIface {
-	var returns []MetadataEntryIface
+func (n *node) Metadata() []MetadataEntry {
+	var returns []MetadataEntry
 	_jsii_.Get(
 		n,
 		"metadata",
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*MetadataEntryIface)(nil)).Elem(): reflect.TypeOf((*MetadataEntry)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) GetPath() string {
+func (n *node) Path() string {
 	var returns string
 	_jsii_.Get(
 		n,
 		"path",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) GetRoot() IConstructIface {
-	var returns IConstructIface
+func (n *node) Root() IConstruct {
+	var returns IConstruct
 	_jsii_.Get(
 		n,
 		"root",
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) GetScopes() []IConstructIface {
-	var returns []IConstructIface
+func (n *node) Scope() IConstruct {
+	var returns IConstruct
+	_jsii_.Get(
+		n,
+		"scope",
+		&returns,
+	)
+	return returns
+}
+
+func (n *node) Scopes() []IConstruct {
+	var returns []IConstruct
 	_jsii_.Get(
 		n,
 		"scopes",
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) GetUniqueId() string {
+func (n *node) UniqueId() string {
 	var returns string
 	_jsii_.Get(
 		n,
 		"uniqueId",
 		&returns,
-		map[reflect.Type]reflect.Type{},
-	)
-	return returns
-}
-
-func (n *Node) GetScope() IConstructIface {
-	var returns IConstructIface
-	_jsii_.Get(
-		n,
-		"scope",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
-func (n *Node) GetDefaultChild() IConstructIface {
-	var returns IConstructIface
-	_jsii_.Get(
-		n,
-		"defaultChild",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
 
-func NewNode(host ConstructIface, scope IConstructIface, id string) NodeIface {
+func NewNode(host Construct, scope IConstruct, id string) Node {
 	_init_.Initialize()
-	self := Node{}
+	n := node{}
+
 	_jsii_.Create(
 		"constructs.Node",
 		[]interface{}{host, scope, id},
 		[]_jsii_.FQN{},
 		[]_jsii_.Override{},
-		&self,
+		&n,
 	)
-	return &self
+	return &n
 }
 
-func (n *Node) SetDefaultChild(val IConstructIface) {
+func (n *node) SetDefaultChild(val IConstruct) {
 	_jsii_.Set(
 		n,
 		"defaultChild",
@@ -654,18 +479,16 @@ func (n *Node) SetDefaultChild(val IConstructIface) {
 	)
 }
 
-func Node_Of(construct IConstructIface) NodeIface {
+// Returns the node associated with a construct.
+func Node_Of(construct IConstruct) Node {
 	_init_.Initialize()
-	var returns NodeIface
-	_jsii_.InvokeStatic(
+	var returns Node
+	_jsii_.StaticInvoke(
 		"constructs.Node",
 		"of",
 		[]interface{}{construct},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*NodeIface)(nil)).Elem(): reflect.TypeOf((*Node)(nil)).Elem(),
-		},
 	)
 	return returns
 }
@@ -677,12 +500,15 @@ func Node_PathSep() string {
 		"constructs.Node",
 		"PATH_SEP",
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) AddDependency(dependencies IConstructIface) {
+// Add an ordering dependency on another Construct.
+//
+// All constructs in the dependency's scope will be deployed before any
+// construct in this construct's scope.
+func (n *node) AddDependency(dependencies IConstruct) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -690,11 +516,13 @@ func (n *Node) AddDependency(dependencies IConstructIface) {
 		[]interface{}{dependencies},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) AddError(message string) {
+// Adds an { "error": <message> } metadata entry to this construct.
+//
+// The toolkit will fail synthesis when errors are reported.
+func (n *node) AddError(message string) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -702,11 +530,13 @@ func (n *Node) AddError(message string) {
 		[]interface{}{message},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) AddInfo(message string) {
+// Adds a { "info": <message> } metadata entry to this construct.
+//
+// The toolkit will display the info message when apps are synthesized.
+func (n *node) AddInfo(message string) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -714,11 +544,15 @@ func (n *Node) AddInfo(message string) {
 		[]interface{}{message},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) AddMetadata(type_ string, data interface{}, fromFunction interface{}) {
+// Adds a metadata entry to this construct.
+//
+// Entries are arbitrary values and will also include a stack trace to allow tracing back to
+// the code location for when the entry was added. It can be used, for example, to include source
+// mapping in CloudFormation templates to improve diagnostics.
+func (n *node) AddMetadata(type_ string, data interface{}, fromFunction interface{}) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -726,11 +560,14 @@ func (n *Node) AddMetadata(type_ string, data interface{}, fromFunction interfac
 		[]interface{}{type_, data, fromFunction},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) AddValidation(validation IValidationIface) {
+// Adds a validation to this construct.
+//
+// When `node.validate()` is called, the `validate()` method will be called on
+// all validations and all errors will be returned.
+func (n *node) AddValidation(validation IValidation) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -738,11 +575,14 @@ func (n *Node) AddValidation(validation IValidationIface) {
 		[]interface{}{validation},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) AddWarning(message string) {
+// Adds a { "warning": <message> } metadata entry to this construct.
+//
+// The toolkit will display the warning when an app is synthesized, or fail
+// if run in --strict mode.
+func (n *node) AddWarning(message string) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -750,11 +590,11 @@ func (n *Node) AddWarning(message string) {
 		[]interface{}{message},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) ApplyAspect(aspect IAspectIface) {
+// Applies the aspect to this Constructs node.
+func (n *node) ApplyAspect(aspect IAspect) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -762,41 +602,41 @@ func (n *Node) ApplyAspect(aspect IAspectIface) {
 		[]interface{}{aspect},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) FindAll(order ConstructOrder) []IConstructIface {
-	var returns []IConstructIface
+// Return this construct and all of its children in the given order.
+func (n *node) FindAll(order ConstructOrder) []IConstruct {
+	var returns []IConstruct
 	_jsii_.Invoke(
 		n,
 		"findAll",
 		[]interface{}{order},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) FindChild(id string) IConstructIface {
-	var returns IConstructIface
+// Return a direct child by id.
+//
+// Throws an error if the child is not found.
+//
+// Returns: Child with the given id.
+func (n *node) FindChild(id string) IConstruct {
+	var returns IConstruct
 	_jsii_.Invoke(
 		n,
 		"findChild",
 		[]interface{}{id},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) Prepare() {
+// Invokes "prepare" on all constructs (depth-first, post-order) in the tree under `node`.
+func (n *node) Prepare() {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -804,11 +644,14 @@ func (n *Node) Prepare() {
 		[]interface{}{},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) SetContext(key string, value interface{}) {
+// This can be used to set contextual values.
+//
+// Context must be set before any children are added, since children may consult context info during construction.
+// If the key already exists, it will be overridden.
+func (n *node) SetContext(key string, value interface{}) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -816,11 +659,11 @@ func (n *Node) SetContext(key string, value interface{}) {
 		[]interface{}{key, value},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) Synthesize(options SynthesisOptionsIface) {
+// Synthesizes a CloudAssembly from a construct tree.
+func (n *node) Synthesize(options SynthesisOptions) {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -828,26 +671,30 @@ func (n *Node) Synthesize(options SynthesisOptionsIface) {
 		[]interface{}{options},
 		false,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 }
 
-func (n *Node) TryFindChild(id string) IConstructIface {
-	var returns IConstructIface
+// Return a direct child by id, or undefined.
+//
+// Returns: the child if found, or undefined
+func (n *node) TryFindChild(id string) IConstruct {
+	var returns IConstruct
 	_jsii_.Invoke(
 		n,
 		"tryFindChild",
 		[]interface{}{id},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*IConstructIface)(nil)).Elem(): reflect.TypeOf((*IConstruct)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-func (n *Node) TryGetContext(key string) interface{} {
+// Retrieves a value from tree context.
+//
+// Context is usually initialized at the root, but can be overridden at any point in the tree.
+//
+// Returns: The context value or `undefined` if there is no context value for thie key.
+func (n *node) TryGetContext(key string) interface{} {
 	var returns interface{}
 	_jsii_.Invoke(
 		n,
@@ -855,12 +702,15 @@ func (n *Node) TryGetContext(key string) interface{} {
 		[]interface{}{key},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) TryRemoveChild(childName string) bool {
+// Remove the child with the given name, if present.
+//
+// Returns: Whether a child with the given name was deleted.
+// Experimental.
+func (n *node) TryRemoveChild(childName string) bool {
 	var returns bool
 	_jsii_.Invoke(
 		n,
@@ -868,35 +718,26 @@ func (n *Node) TryRemoveChild(childName string) bool {
 		[]interface{}{childName},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{},
 	)
 	return returns
 }
 
-func (n *Node) Validate() []ValidationErrorIface {
-	var returns []ValidationErrorIface
+// Validates tree (depth-first, pre-order) and returns the list of all errors.
+//
+// An empty list indicates that there are no errors.
+func (n *node) Validate() []ValidationError {
+	var returns []ValidationError
 	_jsii_.Invoke(
 		n,
 		"validate",
 		[]interface{}{},
 		true,
 		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*ValidationErrorIface)(nil)).Elem(): reflect.TypeOf((*ValidationError)(nil)).Elem(),
-		},
 	)
 	return returns
 }
 
-// SynthesisOptionsIface is the public interface for the custom type SynthesisOptions
-type SynthesisOptionsIface interface {
-	GetOutdir() string
-	GetSessionContext() map[string]interface{}
-	GetSkipValidation() bool
-}
-
 // Options for synthesis.
-// Struct proxy
 type SynthesisOptions struct {
 	// The output directory into which to synthesize the cloud assembly.
 	Outdir string `json:"outdir"`
@@ -906,79 +747,11 @@ type SynthesisOptions struct {
 	SkipValidation bool `json:"skipValidation"`
 }
 
-func (s *SynthesisOptions) GetOutdir() string {
-	var returns string
-	_jsii_.Get(
-		s,
-		"outdir",
-		&returns,
-		map[reflect.Type]reflect.Type{},
-	)
-	return returns
-}
-
-func (s *SynthesisOptions) GetSessionContext() map[string]interface{} {
-	var returns map[string]interface{}
-	_jsii_.Get(
-		s,
-		"sessionContext",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*interface{})(nil)).Elem(): reflect.TypeOf((*interface{})(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
-func (s *SynthesisOptions) GetSkipValidation() bool {
-	var returns bool
-	_jsii_.Get(
-		s,
-		"skipValidation",
-		&returns,
-		map[reflect.Type]reflect.Type{},
-	)
-	return returns
-}
-
-
-// ValidationErrorIface is the public interface for the custom type ValidationError
-type ValidationErrorIface interface {
-	GetMessage() string
-	GetSource() ConstructIface
-}
-
 // An error returned during the validation phase.
-// Struct proxy
 type ValidationError struct {
 	// The error message.
 	Message string `json:"message"`
 	// The construct which emitted the error.
-	Source ConstructIface `json:"source"`
+	Source Construct `json:"source"`
 }
-
-func (v *ValidationError) GetMessage() string {
-	var returns string
-	_jsii_.Get(
-		v,
-		"message",
-		&returns,
-		map[reflect.Type]reflect.Type{},
-	)
-	return returns
-}
-
-func (v *ValidationError) GetSource() ConstructIface {
-	var returns ConstructIface
-	_jsii_.Get(
-		v,
-		"source",
-		&returns,
-		map[reflect.Type]reflect.Type{
-			reflect.TypeOf((*ConstructIface)(nil)).Elem(): reflect.TypeOf((*Construct)(nil)).Elem(),
-		},
-	)
-	return returns
-}
-
 
