@@ -7,7 +7,7 @@ import (
 	_jsii_ "github.com/aws/jsii-runtime-go"
 )
 
-//go:embed constructs-3.3.63.tgz
+//go:embed constructs-3.3.64.tgz
 var tarball []byte
 var once    sync.Once
 
@@ -16,6 +16,6 @@ var once    sync.Once
 func Initialize() {
 	once.Do(func(){
 		// Load this library into the kernel
-		_jsii_.Load("constructs", "3.3.63", tarball)
+		_jsii_.Load("constructs", "3.3.64", tarball)
 	})
 }
