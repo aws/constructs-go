@@ -17,9 +17,9 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "toString", GoMethod: "ToString"},
 		},
 		func() interface{} {
-			c := construct_jsiiProxy{}
-			_jsii_.InitJsiiProxy(&c.iConstruct_jsiiProxy)
-			return &c
+			j := jsiiProxy_Construct{}
+			_jsii_.InitJsiiProxy(&j.jsiiProxy_IConstruct)
+			return &j
 		},
 	)
 	_jsii_.RegisterClass(
@@ -27,7 +27,7 @@ func init() {
 		reflect.TypeOf((*ConstructMetadata)(nil)).Elem(),
 		nil, // no members
 		func() interface{} {
-			return &constructMetadata_jsiiProxy{}
+			return &jsiiProxy_ConstructMetadata{}
 		},
 	)
 	_jsii_.RegisterStruct(
@@ -53,7 +53,7 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "visit", GoMethod: "Visit"},
 		},
 		func() interface{} {
-			return &iAspect_jsiiProxy{}
+			return &jsiiProxy_IAspect{}
 		},
 	)
 	_jsii_.RegisterInterface(
@@ -61,7 +61,7 @@ func init() {
 		reflect.TypeOf((*IConstruct)(nil)).Elem(),
 		nil, // no members
 		func() interface{} {
-			return &iConstruct_jsiiProxy{}
+			return &jsiiProxy_IConstruct{}
 		},
 	)
 	_jsii_.RegisterInterface(
@@ -71,7 +71,7 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "createNode", GoMethod: "CreateNode"},
 		},
 		func() interface{} {
-			return &iNodeFactory_jsiiProxy{}
+			return &jsiiProxy_INodeFactory{}
 		},
 	)
 	_jsii_.RegisterInterface(
@@ -81,7 +81,7 @@ func init() {
 			_jsii_.MemberProperty{JsiiProperty: "outdir", GoGetter: "Outdir"},
 		},
 		func() interface{} {
-			return &iSynthesisSession_jsiiProxy{}
+			return &jsiiProxy_ISynthesisSession{}
 		},
 	)
 	_jsii_.RegisterInterface(
@@ -91,7 +91,7 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "validate", GoMethod: "Validate"},
 		},
 		func() interface{} {
-			return &iValidation_jsiiProxy{}
+			return &jsiiProxy_IValidation{}
 		},
 	)
 	_jsii_.RegisterStruct(
@@ -132,7 +132,7 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "validate", GoMethod: "Validate"},
 		},
 		func() interface{} {
-			return &node_jsiiProxy{}
+			return &jsiiProxy_Node{}
 		},
 	)
 	_jsii_.RegisterStruct(
