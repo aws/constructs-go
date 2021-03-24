@@ -14,17 +14,17 @@ type Construct interface {
 	IConstruct
 	OnPrepare()
 	OnSynthesize(session ISynthesisSession)
-	OnValidate() []string
-	ToString() string
+	OnValidate() *[]*string
+	ToString() *string
 }
 
 // The jsii proxy struct for Construct
 type jsiiProxy_Construct struct {
-	jsiiProxy_IConstruct // implements constructs.IConstruct
+	jsiiProxy_IConstruct
 }
 
 // Creates a new construct node.
-func NewConstruct(scope Construct, id string, options ConstructOptions) Construct {
+func NewConstruct(scope Construct, id *string, options *ConstructOptions) Construct {
 	_init_.Initialize()
 
 	j := jsiiProxy_Construct{}
@@ -32,12 +32,21 @@ func NewConstruct(scope Construct, id string, options ConstructOptions) Construc
 	_jsii_.Create(
 		"constructs.Construct",
 		[]interface{}{scope, id, options},
-		[]_jsii_.FQN{"constructs.IConstruct"},
-		nil, // no overrides
 		&j,
 	)
 
 	return &j
+}
+
+// Creates a new construct node.
+func NewConstruct_Override(c Construct, scope Construct, id *string, options *ConstructOptions) {
+	_init_.Initialize()
+
+	_jsii_.Create(
+		"constructs.Construct",
+		[]interface{}{scope, id, options},
+		c,
+	)
 }
 
 // Perform final modifications before synthesis.
@@ -52,7 +61,7 @@ func (c *jsiiProxy_Construct) OnPrepare() {
 	_jsii_.InvokeVoid(
 		c,
 		"onPrepare",
-		nil /* no parameters */,
+		nil, // no parameters
 	)
 }
 
@@ -76,13 +85,13 @@ func (c *jsiiProxy_Construct) OnSynthesize(session ISynthesisSession) {
 // Returns: An array of validation error messages, or an empty array if there the construct is valid.
 // Deprecated: use `Node.addValidation()` to subscribe validation functions on this construct
 // instead of overriding this method.
-func (c *jsiiProxy_Construct) OnValidate() []string {
-	var returns []string
+func (c *jsiiProxy_Construct) OnValidate() *[]*string {
+	var returns *[]*string
 
 	_jsii_.Invoke(
 		c,
 		"onValidate",
-		nil /* no parameters */,
+		nil, // no parameters
 		&returns,
 	)
 
@@ -90,13 +99,13 @@ func (c *jsiiProxy_Construct) OnValidate() []string {
 }
 
 // Returns a string representation of this construct.
-func (c *jsiiProxy_Construct) ToString() string {
-	var returns string
+func (c *jsiiProxy_Construct) ToString() *string {
+	var returns *string
 
 	_jsii_.Invoke(
 		c,
 		"toString",
-		nil /* no parameters */,
+		nil, // no parameters
 		&returns,
 	)
 
@@ -112,9 +121,9 @@ type jsiiProxy_ConstructMetadata struct {
 	_ byte // padding
 }
 
-func ConstructMetadata_DisableStackTraceInMetadata() string {
+func ConstructMetadata_DISABLE_STACK_TRACE_IN_METADATA() *string {
 	_init_.Initialize()
-	var returns string
+	var returns *string
 	_jsii_.StaticGet(
 		"constructs.ConstructMetadata",
 		"DISABLE_STACK_TRACE_IN_METADATA",
@@ -123,9 +132,9 @@ func ConstructMetadata_DisableStackTraceInMetadata() string {
 	return returns
 }
 
-func ConstructMetadata_ErrorMetadataKey() string {
+func ConstructMetadata_ERROR_METADATA_KEY() *string {
 	_init_.Initialize()
-	var returns string
+	var returns *string
 	_jsii_.StaticGet(
 		"constructs.ConstructMetadata",
 		"ERROR_METADATA_KEY",
@@ -134,9 +143,9 @@ func ConstructMetadata_ErrorMetadataKey() string {
 	return returns
 }
 
-func ConstructMetadata_InfoMetadataKey() string {
+func ConstructMetadata_INFO_METADATA_KEY() *string {
 	_init_.Initialize()
-	var returns string
+	var returns *string
 	_jsii_.StaticGet(
 		"constructs.ConstructMetadata",
 		"INFO_METADATA_KEY",
@@ -145,9 +154,9 @@ func ConstructMetadata_InfoMetadataKey() string {
 	return returns
 }
 
-func ConstructMetadata_WarningMetadataKey() string {
+func ConstructMetadata_WARNING_METADATA_KEY() *string {
 	_init_.Initialize()
-	var returns string
+	var returns *string
 	_jsii_.StaticGet(
 		"constructs.ConstructMetadata",
 		"WARNING_METADATA_KEY",
@@ -209,7 +218,7 @@ type jsiiProxy_IConstruct struct {
 // A factory for attaching `Node`s to the construct.
 type INodeFactory interface {
 	// Returns a new `Node` associated with `host`.
-	CreateNode(host Construct, scope IConstruct, id string) Node
+	CreateNode(host Construct, scope IConstruct, id *string) Node
 }
 
 // The jsii proxy for INodeFactory
@@ -217,7 +226,7 @@ type jsiiProxy_INodeFactory struct {
 	_ byte // padding
 }
 
-func (i *jsiiProxy_INodeFactory) CreateNode(host Construct, scope IConstruct, id string) Node {
+func (i *jsiiProxy_INodeFactory) CreateNode(host Construct, scope IConstruct, id *string) Node {
 	var returns Node
 
 	_jsii_.Invoke(
@@ -235,7 +244,7 @@ func (i *jsiiProxy_INodeFactory) CreateNode(host Construct, scope IConstruct, id
 // Passed into `construct.onSynthesize()` methods.
 type ISynthesisSession interface {
 	// The output directory for this synthesis session.
-	Outdir() string
+	Outdir() *string
 }
 
 // The jsii proxy for ISynthesisSession
@@ -243,8 +252,8 @@ type jsiiProxy_ISynthesisSession struct {
 	_ byte // padding
 }
 
-func (j *jsiiProxy_ISynthesisSession) Outdir() string {
-	var returns string
+func (j *jsiiProxy_ISynthesisSession) Outdir() *string {
+	var returns *string
 	_jsii_.Get(
 		j,
 		"outdir",
@@ -261,7 +270,7 @@ type IValidation interface {
 	// validation logic. It is called on all constructs before synthesis.
 	//
 	// Returns: An array of validation error messages, or an empty array if there the construct is valid.
-	Validate() []string
+	Validate() *[]*string
 }
 
 // The jsii proxy for IValidation
@@ -269,13 +278,13 @@ type jsiiProxy_IValidation struct {
 	_ byte // padding
 }
 
-func (i *jsiiProxy_IValidation) Validate() []string {
-	var returns []string
+func (i *jsiiProxy_IValidation) Validate() *[]*string {
+	var returns *[]*string
 
 	_jsii_.Invoke(
 		i,
 		"validate",
-		nil /* no parameters */,
+		nil, // no parameters
 		&returns,
 	)
 
@@ -287,45 +296,45 @@ type MetadataEntry struct {
 	// The data.
 	Data interface{} `json:"data"`
 	// The metadata entry type.
-	Type string `json:"type"`
+	Type *string `json:"type"`
 	// Stack trace.
 	//
 	// Can be omitted by setting the context key
 	// `ConstructMetadata.DISABLE_STACK_TRACE_IN_METADATA` to 1.
-	Trace []string `json:"trace"`
+	Trace *[]*string `json:"trace"`
 }
 
 // Represents the construct node in the scope tree.
 type Node interface {
-	Addr() string
-	Children() []IConstruct
+	Addr() *string
+	Children() *[]IConstruct
 	DefaultChild() IConstruct
 	SetDefaultChild(val IConstruct)
-	Dependencies() []Dependency
-	Id() string
-	Locked() bool
-	Metadata() []MetadataEntry
-	Path() string
+	Dependencies() *[]*Dependency
+	Id() *string
+	Locked() *bool
+	Metadata() *[]*MetadataEntry
+	Path() *string
 	Root() IConstruct
 	Scope() IConstruct
-	Scopes() []IConstruct
-	UniqueId() string
-	AddDependency(dependencies IConstruct)
-	AddError(message string)
-	AddInfo(message string)
-	AddMetadata(type_ string, data interface{}, fromFunction interface{})
+	Scopes() *[]IConstruct
+	UniqueId() *string
+	AddDependency(dependencies ...IConstruct)
+	AddError(message *string)
+	AddInfo(message *string)
+	AddMetadata(type_ *string, data interface{}, fromFunction interface{})
 	AddValidation(validation IValidation)
-	AddWarning(message string)
+	AddWarning(message *string)
 	ApplyAspect(aspect IAspect)
-	FindAll(order ConstructOrder) []IConstruct
-	FindChild(id string) IConstruct
+	FindAll(order ConstructOrder) *[]IConstruct
+	FindChild(id *string) IConstruct
 	Prepare()
-	SetContext(key string, value interface{})
-	Synthesize(options SynthesisOptions)
-	TryFindChild(id string) IConstruct
-	TryGetContext(key string) interface{}
-	TryRemoveChild(childName string) bool
-	Validate() []ValidationError
+	SetContext(key *string, value interface{})
+	Synthesize(options *SynthesisOptions)
+	TryFindChild(id *string) IConstruct
+	TryGetContext(key *string) interface{}
+	TryRemoveChild(childName *string) *bool
+	Validate() *[]*ValidationError
 }
 
 // The jsii proxy struct for Node
@@ -333,8 +342,8 @@ type jsiiProxy_Node struct {
 	_ byte // padding
 }
 
-func (j *jsiiProxy_Node) Addr() string {
-	var returns string
+func (j *jsiiProxy_Node) Addr() *string {
+	var returns *string
 	_jsii_.Get(
 		j,
 		"addr",
@@ -343,8 +352,8 @@ func (j *jsiiProxy_Node) Addr() string {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Children() []IConstruct {
-	var returns []IConstruct
+func (j *jsiiProxy_Node) Children() *[]IConstruct {
+	var returns *[]IConstruct
 	_jsii_.Get(
 		j,
 		"children",
@@ -363,8 +372,8 @@ func (j *jsiiProxy_Node) DefaultChild() IConstruct {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Dependencies() []Dependency {
-	var returns []Dependency
+func (j *jsiiProxy_Node) Dependencies() *[]*Dependency {
+	var returns *[]*Dependency
 	_jsii_.Get(
 		j,
 		"dependencies",
@@ -373,8 +382,8 @@ func (j *jsiiProxy_Node) Dependencies() []Dependency {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Id() string {
-	var returns string
+func (j *jsiiProxy_Node) Id() *string {
+	var returns *string
 	_jsii_.Get(
 		j,
 		"id",
@@ -383,8 +392,8 @@ func (j *jsiiProxy_Node) Id() string {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Locked() bool {
-	var returns bool
+func (j *jsiiProxy_Node) Locked() *bool {
+	var returns *bool
 	_jsii_.Get(
 		j,
 		"locked",
@@ -393,8 +402,8 @@ func (j *jsiiProxy_Node) Locked() bool {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Metadata() []MetadataEntry {
-	var returns []MetadataEntry
+func (j *jsiiProxy_Node) Metadata() *[]*MetadataEntry {
+	var returns *[]*MetadataEntry
 	_jsii_.Get(
 		j,
 		"metadata",
@@ -403,8 +412,8 @@ func (j *jsiiProxy_Node) Metadata() []MetadataEntry {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Path() string {
-	var returns string
+func (j *jsiiProxy_Node) Path() *string {
+	var returns *string
 	_jsii_.Get(
 		j,
 		"path",
@@ -433,8 +442,8 @@ func (j *jsiiProxy_Node) Scope() IConstruct {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Scopes() []IConstruct {
-	var returns []IConstruct
+func (j *jsiiProxy_Node) Scopes() *[]IConstruct {
+	var returns *[]IConstruct
 	_jsii_.Get(
 		j,
 		"scopes",
@@ -443,8 +452,8 @@ func (j *jsiiProxy_Node) Scopes() []IConstruct {
 	return returns
 }
 
-func (j *jsiiProxy_Node) UniqueId() string {
-	var returns string
+func (j *jsiiProxy_Node) UniqueId() *string {
+	var returns *string
 	_jsii_.Get(
 		j,
 		"uniqueId",
@@ -454,7 +463,7 @@ func (j *jsiiProxy_Node) UniqueId() string {
 }
 
 
-func NewNode(host Construct, scope IConstruct, id string) Node {
+func NewNode(host Construct, scope IConstruct, id *string) Node {
 	_init_.Initialize()
 
 	j := jsiiProxy_Node{}
@@ -462,12 +471,20 @@ func NewNode(host Construct, scope IConstruct, id string) Node {
 	_jsii_.Create(
 		"constructs.Node",
 		[]interface{}{host, scope, id},
-		[]_jsii_.FQN{},
-		nil, // no overrides
 		&j,
 	)
 
 	return &j
+}
+
+func NewNode_Override(n Node, host Construct, scope IConstruct, id *string) {
+	_init_.Initialize()
+
+	_jsii_.Create(
+		"constructs.Node",
+		[]interface{}{host, scope, id},
+		n,
+	)
 }
 
 func (j *jsiiProxy_Node) SetDefaultChild(val IConstruct) {
@@ -494,9 +511,9 @@ func Node_Of(construct IConstruct) Node {
 	return returns
 }
 
-func Node_PathSep() string {
+func Node_PATH_SEP() *string {
 	_init_.Initialize()
-	var returns string
+	var returns *string
 	_jsii_.StaticGet(
 		"constructs.Node",
 		"PATH_SEP",
@@ -509,18 +526,23 @@ func Node_PathSep() string {
 //
 // All constructs in the dependency's scope will be deployed before any
 // construct in this construct's scope.
-func (n *jsiiProxy_Node) AddDependency(dependencies IConstruct) {
+func (n *jsiiProxy_Node) AddDependency(dependencies ...IConstruct) {
+	args := []interface{}{}
+	for _, a := range dependencies {
+		args = append(args, a)
+	}
+
 	_jsii_.InvokeVoid(
 		n,
 		"addDependency",
-		[]interface{}{dependencies},
+		args,
 	)
 }
 
 // Adds an { "error": <message> } metadata entry to this construct.
 //
 // The toolkit will fail synthesis when errors are reported.
-func (n *jsiiProxy_Node) AddError(message string) {
+func (n *jsiiProxy_Node) AddError(message *string) {
 	_jsii_.InvokeVoid(
 		n,
 		"addError",
@@ -531,7 +553,7 @@ func (n *jsiiProxy_Node) AddError(message string) {
 // Adds a { "info": <message> } metadata entry to this construct.
 //
 // The toolkit will display the info message when apps are synthesized.
-func (n *jsiiProxy_Node) AddInfo(message string) {
+func (n *jsiiProxy_Node) AddInfo(message *string) {
 	_jsii_.InvokeVoid(
 		n,
 		"addInfo",
@@ -544,7 +566,7 @@ func (n *jsiiProxy_Node) AddInfo(message string) {
 // Entries are arbitrary values and will also include a stack trace to allow tracing back to
 // the code location for when the entry was added. It can be used, for example, to include source
 // mapping in CloudFormation templates to improve diagnostics.
-func (n *jsiiProxy_Node) AddMetadata(type_ string, data interface{}, fromFunction interface{}) {
+func (n *jsiiProxy_Node) AddMetadata(type_ *string, data interface{}, fromFunction interface{}) {
 	_jsii_.InvokeVoid(
 		n,
 		"addMetadata",
@@ -568,7 +590,7 @@ func (n *jsiiProxy_Node) AddValidation(validation IValidation) {
 //
 // The toolkit will display the warning when an app is synthesized, or fail
 // if run in --strict mode.
-func (n *jsiiProxy_Node) AddWarning(message string) {
+func (n *jsiiProxy_Node) AddWarning(message *string) {
 	_jsii_.InvokeVoid(
 		n,
 		"addWarning",
@@ -586,8 +608,8 @@ func (n *jsiiProxy_Node) ApplyAspect(aspect IAspect) {
 }
 
 // Return this construct and all of its children in the given order.
-func (n *jsiiProxy_Node) FindAll(order ConstructOrder) []IConstruct {
-	var returns []IConstruct
+func (n *jsiiProxy_Node) FindAll(order ConstructOrder) *[]IConstruct {
+	var returns *[]IConstruct
 
 	_jsii_.Invoke(
 		n,
@@ -604,7 +626,7 @@ func (n *jsiiProxy_Node) FindAll(order ConstructOrder) []IConstruct {
 // Throws an error if the child is not found.
 //
 // Returns: Child with the given id.
-func (n *jsiiProxy_Node) FindChild(id string) IConstruct {
+func (n *jsiiProxy_Node) FindChild(id *string) IConstruct {
 	var returns IConstruct
 
 	_jsii_.Invoke(
@@ -622,7 +644,7 @@ func (n *jsiiProxy_Node) Prepare() {
 	_jsii_.InvokeVoid(
 		n,
 		"prepare",
-		nil /* no parameters */,
+		nil, // no parameters
 	)
 }
 
@@ -630,7 +652,7 @@ func (n *jsiiProxy_Node) Prepare() {
 //
 // Context must be set before any children are added, since children may consult context info during construction.
 // If the key already exists, it will be overridden.
-func (n *jsiiProxy_Node) SetContext(key string, value interface{}) {
+func (n *jsiiProxy_Node) SetContext(key *string, value interface{}) {
 	_jsii_.InvokeVoid(
 		n,
 		"setContext",
@@ -639,7 +661,7 @@ func (n *jsiiProxy_Node) SetContext(key string, value interface{}) {
 }
 
 // Synthesizes a CloudAssembly from a construct tree.
-func (n *jsiiProxy_Node) Synthesize(options SynthesisOptions) {
+func (n *jsiiProxy_Node) Synthesize(options *SynthesisOptions) {
 	_jsii_.InvokeVoid(
 		n,
 		"synthesize",
@@ -650,7 +672,7 @@ func (n *jsiiProxy_Node) Synthesize(options SynthesisOptions) {
 // Return a direct child by id, or undefined.
 //
 // Returns: the child if found, or undefined
-func (n *jsiiProxy_Node) TryFindChild(id string) IConstruct {
+func (n *jsiiProxy_Node) TryFindChild(id *string) IConstruct {
 	var returns IConstruct
 
 	_jsii_.Invoke(
@@ -668,7 +690,7 @@ func (n *jsiiProxy_Node) TryFindChild(id string) IConstruct {
 // Context is usually initialized at the root, but can be overridden at any point in the tree.
 //
 // Returns: The context value or `undefined` if there is no context value for thie key.
-func (n *jsiiProxy_Node) TryGetContext(key string) interface{} {
+func (n *jsiiProxy_Node) TryGetContext(key *string) interface{} {
 	var returns interface{}
 
 	_jsii_.Invoke(
@@ -685,8 +707,8 @@ func (n *jsiiProxy_Node) TryGetContext(key string) interface{} {
 //
 // Returns: Whether a child with the given name was deleted.
 // Experimental.
-func (n *jsiiProxy_Node) TryRemoveChild(childName string) bool {
-	var returns bool
+func (n *jsiiProxy_Node) TryRemoveChild(childName *string) *bool {
+	var returns *bool
 
 	_jsii_.Invoke(
 		n,
@@ -701,13 +723,13 @@ func (n *jsiiProxy_Node) TryRemoveChild(childName string) bool {
 // Validates tree (depth-first, pre-order) and returns the list of all errors.
 //
 // An empty list indicates that there are no errors.
-func (n *jsiiProxy_Node) Validate() []ValidationError {
-	var returns []ValidationError
+func (n *jsiiProxy_Node) Validate() *[]*ValidationError {
+	var returns *[]*ValidationError
 
 	_jsii_.Invoke(
 		n,
 		"validate",
-		nil /* no parameters */,
+		nil, // no parameters
 		&returns,
 	)
 
@@ -717,17 +739,17 @@ func (n *jsiiProxy_Node) Validate() []ValidationError {
 // Options for synthesis.
 type SynthesisOptions struct {
 	// The output directory into which to synthesize the cloud assembly.
-	Outdir string `json:"outdir"`
+	Outdir *string `json:"outdir"`
 	// Additional context passed into the synthesis session object when `construct.synth` is called.
-	SessionContext map[string]interface{} `json:"sessionContext"`
+	SessionContext *map[string]interface{} `json:"sessionContext"`
 	// Whether synthesis should skip the validation phase.
-	SkipValidation bool `json:"skipValidation"`
+	SkipValidation *bool `json:"skipValidation"`
 }
 
 // An error returned during the validation phase.
 type ValidationError struct {
 	// The error message.
-	Message string `json:"message"`
+	Message *string `json:"message"`
 	// The construct which emitted the error.
 	Source Construct `json:"source"`
 }
