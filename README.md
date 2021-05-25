@@ -1,4 +1,4 @@
-## constructrs-go
+## constructs-go
 
 Golang bindings for [constructs](https://github.com/aws/constructs)
 
