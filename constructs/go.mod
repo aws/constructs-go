@@ -1,7 +1,7 @@
-module github.com/aws/constructs-go/constructs/v3
+module github.com/aws/constructs-go/constructs/v10
 
 go 1.16
 
 require (
-	github.com/aws/jsii-runtime-go v1.51.0
+	github.com/aws/jsii-runtime-go v1.52.0
 )
