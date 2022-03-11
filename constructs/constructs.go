@@ -1,8 +1,8 @@
-// A programming model for composable configuration
+// A programming model for software-defined state
 package constructs
 
 import (
-	_init_ "github.com/aws/constructs-go/constructs/v3/jsii"
+	_init_ "github.com/aws/constructs-go/constructs/v10/jsii"
 	_jsii_ "github.com/aws/jsii-runtime-go/runtime"
 )
 
@@ -12,9 +12,9 @@ import (
 // another construct.
 type Construct interface {
 	IConstruct
-	OnPrepare()
-	OnSynthesize(session ISynthesisSession)
-	OnValidate() *[]*string
+	// The tree node.
+	Node() Node
+	// Returns a string representation of this construct.
 	ToString() *string
 }
 
@@ -23,15 +23,26 @@ type jsiiProxy_Construct struct {
 	jsiiProxy_IConstruct
 }
 
+func (j *jsiiProxy_Construct) Node() Node {
+	var returns Node
+	_jsii_.Get(
+		j,
+		"node",
+		&returns,
+	)
+	return returns
+}
+
+
 // Creates a new construct node.
-func NewConstruct(scope Construct, id *string, options *ConstructOptions) Construct {
+func NewConstruct(scope Construct, id *string) Construct {
 	_init_.Initialize()
 
 	j := jsiiProxy_Construct{}
 
 	_jsii_.Create(
 		"constructs.Construct",
-		[]interface{}{scope, id, options},
+		[]interface{}{scope, id},
 		&j,
 	)
 
@@ -39,66 +50,35 @@ func NewConstruct(scope Construct, id *string, options *ConstructOptions) Constr
 }
 
 // Creates a new construct node.
-func NewConstruct_Override(c Construct, scope Construct, id *string, options *ConstructOptions) {
+func NewConstruct_Override(c Construct, scope Construct, id *string) {
 	_init_.Initialize()
 
 	_jsii_.Create(
 		"constructs.Construct",
-		[]interface{}{scope, id, options},
+		[]interface{}{scope, id},
 		c,
 	)
 }
 
-// Perform final modifications before synthesis.
+// Checks if `x` is a construct.
 //
-// This method can be implemented by derived constructs in order to perform
-// final changes before synthesis. prepare() will be called after child
-// constructs have been prepared.
-//
-// This is an advanced framework feature. Only use this if you
-// understand the implications.
-func (c *jsiiProxy_Construct) OnPrepare() {
-	_jsii_.InvokeVoid(
-		c,
-		"onPrepare",
-		nil, // no parameters
-	)
-}
+// Returns: true if `x` is an object created from a class which extends `Construct`.
+// Deprecated: use `x instanceof Construct` instead.
+func Construct_IsConstruct(x interface{}) *bool {
+	_init_.Initialize()
 
-// Allows this construct to emit artifacts into the cloud assembly during synthesis.
-//
-// This method is usually implemented by framework-level constructs such as `Stack` and `Asset`
-// as they participate in synthesizing the cloud assembly.
-func (c *jsiiProxy_Construct) OnSynthesize(session ISynthesisSession) {
-	_jsii_.InvokeVoid(
-		c,
-		"onSynthesize",
-		[]interface{}{session},
-	)
-}
+	var returns *bool
 
-// Validate the current construct.
-//
-// This method can be implemented by derived constructs in order to perform
-// validation logic. It is called on all constructs before synthesis.
-//
-// Returns: An array of validation error messages, or an empty array if there the construct is valid.
-// Deprecated: use `Node.addValidation()` to subscribe validation functions on this construct
-// instead of overriding this method.
-func (c *jsiiProxy_Construct) OnValidate() *[]*string {
-	var returns *[]*string
-
-	_jsii_.Invoke(
-		c,
-		"onValidate",
-		nil, // no parameters
+	_jsii_.StaticInvoke(
+		"constructs.Construct",
+		"isConstruct",
+		[]interface{}{x},
 		&returns,
 	)
 
 	return returns
 }
 
-// Returns a string representation of this construct.
 func (c *jsiiProxy_Construct) ToString() *string {
 	var returns *string
 
@@ -112,158 +92,229 @@ func (c *jsiiProxy_Construct) ToString() *string {
 	return returns
 }
 
-// Metadata keys used by constructs.
-type ConstructMetadata interface {
-}
-
-// The jsii proxy struct for ConstructMetadata
-type jsiiProxy_ConstructMetadata struct {
-	_ byte // padding
-}
-
-func ConstructMetadata_DISABLE_STACK_TRACE_IN_METADATA() *string {
-	_init_.Initialize()
-	var returns *string
-	_jsii_.StaticGet(
-		"constructs.ConstructMetadata",
-		"DISABLE_STACK_TRACE_IN_METADATA",
-		&returns,
-	)
-	return returns
-}
-
-func ConstructMetadata_ERROR_METADATA_KEY() *string {
-	_init_.Initialize()
-	var returns *string
-	_jsii_.StaticGet(
-		"constructs.ConstructMetadata",
-		"ERROR_METADATA_KEY",
-		&returns,
-	)
-	return returns
-}
-
-func ConstructMetadata_INFO_METADATA_KEY() *string {
-	_init_.Initialize()
-	var returns *string
-	_jsii_.StaticGet(
-		"constructs.ConstructMetadata",
-		"INFO_METADATA_KEY",
-		&returns,
-	)
-	return returns
-}
-
-func ConstructMetadata_WARNING_METADATA_KEY() *string {
-	_init_.Initialize()
-	var returns *string
-	_jsii_.StaticGet(
-		"constructs.ConstructMetadata",
-		"WARNING_METADATA_KEY",
-		&returns,
-	)
-	return returns
-}
-
-// Options for creating constructs.
-type ConstructOptions struct {
-	// A factory for attaching `Node`s to the construct.
-	NodeFactory INodeFactory `json:"nodeFactory" yaml:"nodeFactory"`
-}
-
 // In what order to return constructs.
 type ConstructOrder string
 
 const (
+	// Depth-first, pre-order.
 	ConstructOrder_PREORDER ConstructOrder = "PREORDER"
+	// Depth-first, post-order (leaf nodes first).
 	ConstructOrder_POSTORDER ConstructOrder = "POSTORDER"
 )
 
-// A single dependency.
-type Dependency struct {
-	// Source the dependency.
-	Source IConstruct `json:"source" yaml:"source"`
-	// Target of the dependency.
-	Target IConstruct `json:"target" yaml:"target"`
+// Trait for IDependable.
+//
+// Traits are interfaces that are privately implemented by objects. Instead of
+// showing up in the public interface of a class, they need to be queried
+// explicitly. This is used to implement certain framework features that are
+// not intended to be used by Construct consumers, and so should be hidden
+// from accidental use.
+//
+// Example:
+//   // Usage
+//   const roots = DependableTrait.get(construct).dependencyRoots;
+//
+//   // Definition
+//   DependableTrait.implement(construct, {
+//     get dependencyRoots() { return []; }
+//   });
+//
+// Experimental.
+type Dependable interface {
+	// The set of constructs that form the root of this dependable.
+	//
+	// All resources under all returned constructs are included in the ordering
+	// dependency.
+	// Experimental.
+	DependencyRoots() *[]IConstruct
 }
 
-// Represents an Aspect.
-type IAspect interface {
-	// All aspects can visit an IConstruct.
-	Visit(node IConstruct)
-}
-
-// The jsii proxy for IAspect
-type jsiiProxy_IAspect struct {
+// The jsii proxy struct for Dependable
+type jsiiProxy_Dependable struct {
 	_ byte // padding
 }
 
-func (i *jsiiProxy_IAspect) Visit(node IConstruct) {
+func (j *jsiiProxy_Dependable) DependencyRoots() *[]IConstruct {
+	var returns *[]IConstruct
+	_jsii_.Get(
+		j,
+		"dependencyRoots",
+		&returns,
+	)
+	return returns
+}
+
+
+// Experimental.
+func NewDependable_Override(d Dependable) {
+	_init_.Initialize()
+
+	_jsii_.Create(
+		"constructs.Dependable",
+		nil, // no parameters
+		d,
+	)
+}
+
+// Return the matching Dependable for the given class instance.
+// Deprecated: use `of`.
+func Dependable_Get(instance IDependable) Dependable {
+	_init_.Initialize()
+
+	var returns Dependable
+
+	_jsii_.StaticInvoke(
+		"constructs.Dependable",
+		"get",
+		[]interface{}{instance},
+		&returns,
+	)
+
+	return returns
+}
+
+// Turn any object into an IDependable.
+// Experimental.
+func Dependable_Implement(instance IDependable, trait Dependable) {
+	_init_.Initialize()
+
+	_jsii_.StaticInvokeVoid(
+		"constructs.Dependable",
+		"implement",
+		[]interface{}{instance, trait},
+	)
+}
+
+// Return the matching Dependable for the given class instance.
+// Experimental.
+func Dependable_Of(instance IDependable) Dependable {
+	_init_.Initialize()
+
+	var returns Dependable
+
+	_jsii_.StaticInvoke(
+		"constructs.Dependable",
+		"of",
+		[]interface{}{instance},
+		&returns,
+	)
+
+	return returns
+}
+
+// A set of constructs to be used as a dependable.
+//
+// This class can be used when a set of constructs which are disjoint in the
+// construct tree needs to be combined to be used as a single dependable.
+// Experimental.
+type DependencyGroup interface {
+	IDependable
+	// Add a construct to the dependency roots.
+	// Experimental.
+	Add(scopes ...IDependable)
+}
+
+// The jsii proxy struct for DependencyGroup
+type jsiiProxy_DependencyGroup struct {
+	jsiiProxy_IDependable
+}
+
+// Experimental.
+func NewDependencyGroup(deps ...IDependable) DependencyGroup {
+	_init_.Initialize()
+
+	args := []interface{}{}
+	for _, a := range deps {
+		args = append(args, a)
+	}
+
+	j := jsiiProxy_DependencyGroup{}
+
+	_jsii_.Create(
+		"constructs.DependencyGroup",
+		args,
+		&j,
+	)
+
+	return &j
+}
+
+// Experimental.
+func NewDependencyGroup_Override(d DependencyGroup, deps ...IDependable) {
+	_init_.Initialize()
+
+	args := []interface{}{}
+	for _, a := range deps {
+		args = append(args, a)
+	}
+
+	_jsii_.Create(
+		"constructs.DependencyGroup",
+		args,
+		d,
+	)
+}
+
+func (d *jsiiProxy_DependencyGroup) Add(scopes ...IDependable) {
+	args := []interface{}{}
+	for _, a := range scopes {
+		args = append(args, a)
+	}
+
 	_jsii_.InvokeVoid(
-		i,
-		"visit",
-		[]interface{}{node},
+		d,
+		"add",
+		args,
 	)
 }
 
 // Represents a construct.
 type IConstruct interface {
+	IDependable
+	// The tree node.
+	Node() Node
 }
 
 // The jsii proxy for IConstruct
 type jsiiProxy_IConstruct struct {
-	_ byte // padding
+	jsiiProxy_IDependable
 }
 
-// A factory for attaching `Node`s to the construct.
-type INodeFactory interface {
-	// Returns a new `Node` associated with `host`.
-	CreateNode(host Construct, scope IConstruct, id *string) Node
-}
-
-// The jsii proxy for INodeFactory
-type jsiiProxy_INodeFactory struct {
-	_ byte // padding
-}
-
-func (i *jsiiProxy_INodeFactory) CreateNode(host Construct, scope IConstruct, id *string) Node {
+func (j *jsiiProxy_IConstruct) Node() Node {
 	var returns Node
-
-	_jsii_.Invoke(
-		i,
-		"createNode",
-		[]interface{}{host, scope, id},
-		&returns,
-	)
-
-	return returns
-}
-
-// Represents a single session of synthesis.
-//
-// Passed into `construct.onSynthesize()` methods.
-type ISynthesisSession interface {
-	// The output directory for this synthesis session.
-	Outdir() *string
-}
-
-// The jsii proxy for ISynthesisSession
-type jsiiProxy_ISynthesisSession struct {
-	_ byte // padding
-}
-
-func (j *jsiiProxy_ISynthesisSession) Outdir() *string {
-	var returns *string
 	_jsii_.Get(
 		j,
-		"outdir",
+		"node",
 		&returns,
 	)
 	return returns
+}
+
+// Trait marker for classes that can be depended upon.
+//
+// The presence of this interface indicates that an object has
+// an `IDependableTrait` implementation.
+//
+// This interface can be used to take an (ordering) dependency on a set of
+// constructs. An ordering dependency implies that the resources represented by
+// those constructs are deployed before the resources depending ON them are
+// deployed.
+type IDependable interface {
+}
+
+// The jsii proxy for IDependable
+type jsiiProxy_IDependable struct {
+	_ byte // padding
 }
 
 // Implement this interface in order for the construct to be able to validate itself.
+//
+// Implement this interface in order for the construct to be able to validate itself.
 type IValidation interface {
+	// Validate the current construct.
+	//
+	// This method can be implemented by derived constructs in order to perform
+	// validation logic. It is called on all constructs before synthesis.
 	// Validate the current construct.
 	//
 	// This method can be implemented by derived constructs in order to perform
@@ -297,44 +348,144 @@ type MetadataEntry struct {
 	Data interface{} `json:"data" yaml:"data"`
 	// The metadata entry type.
 	Type *string `json:"type" yaml:"type"`
-	// Stack trace.
+	// Stack trace at the point of adding the metadata.
 	//
-	// Can be omitted by setting the context key
-	// `ConstructMetadata.DISABLE_STACK_TRACE_IN_METADATA` to 1.
+	// Only available if `addMetadata()` is called with `stackTrace: true`.
 	Trace *[]*string `json:"trace" yaml:"trace"`
+}
+
+// Options for `construct.addMetadata()`.
+type MetadataOptions struct {
+	// Include stack trace with metadata entry.
+	StackTrace *bool `json:"stackTrace" yaml:"stackTrace"`
+	// A JavaScript function to begin tracing from.
+	//
+	// This option is ignored unless `stackTrace` is `true`.
+	TraceFromFunction interface{} `json:"traceFromFunction" yaml:"traceFromFunction"`
 }
 
 // Represents the construct node in the scope tree.
 type Node interface {
+	// Returns an opaque tree-unique address for this construct.
+	//
+	// Addresses are 42 characters hexadecimal strings. They begin with "c8"
+	// followed by 40 lowercase hexadecimal characters (0-9a-f).
+	//
+	// Addresses are calculated using a SHA-1 of the components of the construct
+	// path.
+	//
+	// To enable refactorings of construct trees, constructs with the ID `Default`
+	// will be excluded from the calculation. In those cases constructs in the
+	// same tree may have the same addreess.
+	//
+	// Example:
+	//   c83a2846e506bcc5f10682b564084bca2d275709ee
+	//
 	Addr() *string
+	// All direct children of this construct.
 	Children() *[]IConstruct
+	// Returns the child construct that has the id `Default` or `Resource"`.
+	//
+	// This is usually the construct that provides the bulk of the underlying functionality.
+	// Useful for modifications of the underlying construct that are not available at the higher levels.
+	// Override the defaultChild property.
+	//
+	// This should only be used in the cases where the correct
+	// default child is not named 'Resource' or 'Default' as it
+	// should be.
+	//
+	// If you set this to undefined, the default behavior of finding
+	// the child named 'Resource' or 'Default' will be used.
+	//
+	// Returns: a construct or undefined if there is no default child.
 	DefaultChild() IConstruct
 	SetDefaultChild(val IConstruct)
-	Dependencies() *[]*Dependency
+	// Return all dependencies registered on this node (non-recursive).
+	Dependencies() *[]IConstruct
+	// The id of this construct within the current scope.
+	//
+	// This is a a scope-unique id. To obtain an app-unique id for this construct, use `addr`.
 	Id() *string
+	// Returns true if this construct or the scopes in which it is defined are locked.
 	Locked() *bool
+	// An immutable array of metadata objects associated with this construct.
+	//
+	// This can be used, for example, to implement support for deprecation notices, source mapping, etc.
 	Metadata() *[]*MetadataEntry
+	// The full, absolute path of this construct in the tree.
+	//
+	// Components are separated by '/'.
 	Path() *string
+	// Returns the root of the construct tree.
+	//
+	// Returns: The root of the construct tree.
 	Root() IConstruct
+	// Returns the scope in which this construct is defined.
+	//
+	// The value is `undefined` at the root of the construct scope tree.
 	Scope() IConstruct
+	// All parent scopes of this construct.
+	//
+	// Returns: a list of parent scopes. The last element in the list will always
+	// be the current construct and the first element will be the root of the
+	// tree.
 	Scopes() *[]IConstruct
-	UniqueId() *string
-	AddDependency(dependencies ...IConstruct)
-	AddError(message *string)
-	AddInfo(message *string)
-	AddMetadata(type_ *string, data interface{}, fromFunction interface{})
+	// Add an ordering dependency on another construct.
+	//
+	// An `IDependable`.
+	AddDependency(deps ...IDependable)
+	// Adds a metadata entry to this construct.
+	//
+	// Entries are arbitrary values and will also include a stack trace to allow tracing back to
+	// the code location for when the entry was added. It can be used, for example, to include source
+	// mapping in CloudFormation templates to improve diagnostics.
+	AddMetadata(type_ *string, data interface{}, options *MetadataOptions)
+	// Adds a validation to this construct.
+	//
+	// When `node.validate()` is called, the `validate()` method will be called on
+	// all validations and all errors will be returned.
 	AddValidation(validation IValidation)
-	AddWarning(message *string)
-	ApplyAspect(aspect IAspect)
+	// Return this construct and all of its children in the given order.
 	FindAll(order ConstructOrder) *[]IConstruct
+	// Return a direct child by id.
+	//
+	// Throws an error if the child is not found.
+	//
+	// Returns: Child with the given id.
 	FindChild(id *string) IConstruct
-	Prepare()
+	// Locks this construct from allowing more children to be added.
+	//
+	// After this
+	// call, no more children can be added to this construct or to any children.
+	Lock()
+	// This can be used to set contextual values.
+	//
+	// Context must be set before any children are added, since children may consult context info during construction.
+	// If the key already exists, it will be overridden.
 	SetContext(key *string, value interface{})
-	Synthesize(options *SynthesisOptions)
+	// Return a direct child by id, or undefined.
+	//
+	// Returns: the child if found, or undefined.
 	TryFindChild(id *string) IConstruct
+	// Retrieves a value from tree context.
+	//
+	// Context is usually initialized at the root, but can be overridden at any point in the tree.
+	//
+	// Returns: The context value or `undefined` if there is no context value for thie key.
 	TryGetContext(key *string) interface{}
+	// Remove the child with the given name, if present.
+	//
+	// Returns: Whether a child with the given name was deleted.
+	// Experimental.
 	TryRemoveChild(childName *string) *bool
-	Validate() *[]*ValidationError
+	// Validates this construct.
+	//
+	// Invokes the `validate()` method on all validations added through
+	// `addValidation()`.
+	//
+	// Returns: an array of validation error messages associated with this
+	// construct.
+	Validate() *[]*string
 }
 
 // The jsii proxy struct for Node
@@ -372,8 +523,8 @@ func (j *jsiiProxy_Node) DefaultChild() IConstruct {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Dependencies() *[]*Dependency {
-	var returns *[]*Dependency
+func (j *jsiiProxy_Node) Dependencies() *[]IConstruct {
+	var returns *[]IConstruct
 	_jsii_.Get(
 		j,
 		"dependencies",
@@ -452,16 +603,6 @@ func (j *jsiiProxy_Node) Scopes() *[]IConstruct {
 	return returns
 }
 
-func (j *jsiiProxy_Node) UniqueId() *string {
-	var returns *string
-	_jsii_.Get(
-		j,
-		"uniqueId",
-		&returns,
-	)
-	return returns
-}
-
 
 func NewNode(host Construct, scope IConstruct, id *string) Node {
 	_init_.Initialize()
@@ -496,6 +637,7 @@ func (j *jsiiProxy_Node) SetDefaultChild(val IConstruct) {
 }
 
 // Returns the node associated with a construct.
+// Deprecated: use `construct.node` instead
 func Node_Of(construct IConstruct) Node {
 	_init_.Initialize()
 
@@ -522,13 +664,9 @@ func Node_PATH_SEP() *string {
 	return returns
 }
 
-// Add an ordering dependency on another Construct.
-//
-// All constructs in the dependency's scope will be deployed before any
-// construct in this construct's scope.
-func (n *jsiiProxy_Node) AddDependency(dependencies ...IConstruct) {
+func (n *jsiiProxy_Node) AddDependency(deps ...IDependable) {
 	args := []interface{}{}
-	for _, a := range dependencies {
+	for _, a := range deps {
 		args = append(args, a)
 	}
 
@@ -539,45 +677,14 @@ func (n *jsiiProxy_Node) AddDependency(dependencies ...IConstruct) {
 	)
 }
 
-// Adds an { "error": <message> } metadata entry to this construct.
-//
-// The toolkit will fail synthesis when errors are reported.
-func (n *jsiiProxy_Node) AddError(message *string) {
-	_jsii_.InvokeVoid(
-		n,
-		"addError",
-		[]interface{}{message},
-	)
-}
-
-// Adds a { "info": <message> } metadata entry to this construct.
-//
-// The toolkit will display the info message when apps are synthesized.
-func (n *jsiiProxy_Node) AddInfo(message *string) {
-	_jsii_.InvokeVoid(
-		n,
-		"addInfo",
-		[]interface{}{message},
-	)
-}
-
-// Adds a metadata entry to this construct.
-//
-// Entries are arbitrary values and will also include a stack trace to allow tracing back to
-// the code location for when the entry was added. It can be used, for example, to include source
-// mapping in CloudFormation templates to improve diagnostics.
-func (n *jsiiProxy_Node) AddMetadata(type_ *string, data interface{}, fromFunction interface{}) {
+func (n *jsiiProxy_Node) AddMetadata(type_ *string, data interface{}, options *MetadataOptions) {
 	_jsii_.InvokeVoid(
 		n,
 		"addMetadata",
-		[]interface{}{type_, data, fromFunction},
+		[]interface{}{type_, data, options},
 	)
 }
 
-// Adds a validation to this construct.
-//
-// When `node.validate()` is called, the `validate()` method will be called on
-// all validations and all errors will be returned.
 func (n *jsiiProxy_Node) AddValidation(validation IValidation) {
 	_jsii_.InvokeVoid(
 		n,
@@ -586,28 +693,6 @@ func (n *jsiiProxy_Node) AddValidation(validation IValidation) {
 	)
 }
 
-// Adds a { "warning": <message> } metadata entry to this construct.
-//
-// The toolkit will display the warning when an app is synthesized, or fail
-// if run in --strict mode.
-func (n *jsiiProxy_Node) AddWarning(message *string) {
-	_jsii_.InvokeVoid(
-		n,
-		"addWarning",
-		[]interface{}{message},
-	)
-}
-
-// Applies the aspect to this Constructs node.
-func (n *jsiiProxy_Node) ApplyAspect(aspect IAspect) {
-	_jsii_.InvokeVoid(
-		n,
-		"applyAspect",
-		[]interface{}{aspect},
-	)
-}
-
-// Return this construct and all of its children in the given order.
 func (n *jsiiProxy_Node) FindAll(order ConstructOrder) *[]IConstruct {
 	var returns *[]IConstruct
 
@@ -621,11 +706,6 @@ func (n *jsiiProxy_Node) FindAll(order ConstructOrder) *[]IConstruct {
 	return returns
 }
 
-// Return a direct child by id.
-//
-// Throws an error if the child is not found.
-//
-// Returns: Child with the given id.
 func (n *jsiiProxy_Node) FindChild(id *string) IConstruct {
 	var returns IConstruct
 
@@ -639,19 +719,14 @@ func (n *jsiiProxy_Node) FindChild(id *string) IConstruct {
 	return returns
 }
 
-// Invokes "prepare" on all constructs (depth-first, post-order) in the tree under `node`.
-func (n *jsiiProxy_Node) Prepare() {
+func (n *jsiiProxy_Node) Lock() {
 	_jsii_.InvokeVoid(
 		n,
-		"prepare",
+		"lock",
 		nil, // no parameters
 	)
 }
 
-// This can be used to set contextual values.
-//
-// Context must be set before any children are added, since children may consult context info during construction.
-// If the key already exists, it will be overridden.
 func (n *jsiiProxy_Node) SetContext(key *string, value interface{}) {
 	_jsii_.InvokeVoid(
 		n,
@@ -660,18 +735,6 @@ func (n *jsiiProxy_Node) SetContext(key *string, value interface{}) {
 	)
 }
 
-// Synthesizes a CloudAssembly from a construct tree.
-func (n *jsiiProxy_Node) Synthesize(options *SynthesisOptions) {
-	_jsii_.InvokeVoid(
-		n,
-		"synthesize",
-		[]interface{}{options},
-	)
-}
-
-// Return a direct child by id, or undefined.
-//
-// Returns: the child if found, or undefined
 func (n *jsiiProxy_Node) TryFindChild(id *string) IConstruct {
 	var returns IConstruct
 
@@ -685,11 +748,6 @@ func (n *jsiiProxy_Node) TryFindChild(id *string) IConstruct {
 	return returns
 }
 
-// Retrieves a value from tree context.
-//
-// Context is usually initialized at the root, but can be overridden at any point in the tree.
-//
-// Returns: The context value or `undefined` if there is no context value for thie key.
 func (n *jsiiProxy_Node) TryGetContext(key *string) interface{} {
 	var returns interface{}
 
@@ -703,10 +761,6 @@ func (n *jsiiProxy_Node) TryGetContext(key *string) interface{} {
 	return returns
 }
 
-// Remove the child with the given name, if present.
-//
-// Returns: Whether a child with the given name was deleted.
-// Experimental.
 func (n *jsiiProxy_Node) TryRemoveChild(childName *string) *bool {
 	var returns *bool
 
@@ -720,11 +774,8 @@ func (n *jsiiProxy_Node) TryRemoveChild(childName *string) *bool {
 	return returns
 }
 
-// Validates tree (depth-first, pre-order) and returns the list of all errors.
-//
-// An empty list indicates that there are no errors.
-func (n *jsiiProxy_Node) Validate() *[]*ValidationError {
-	var returns *[]*ValidationError
+func (n *jsiiProxy_Node) Validate() *[]*string {
+	var returns *[]*string
 
 	_jsii_.Invoke(
 		n,
@@ -734,23 +785,5 @@ func (n *jsiiProxy_Node) Validate() *[]*ValidationError {
 	)
 
 	return returns
-}
-
-// Options for synthesis.
-type SynthesisOptions struct {
-	// The output directory into which to synthesize the cloud assembly.
-	Outdir *string `json:"outdir" yaml:"outdir"`
-	// Additional context passed into the synthesis session object when `construct.synth` is called.
-	SessionContext *map[string]interface{} `json:"sessionContext" yaml:"sessionContext"`
-	// Whether synthesis should skip the validation phase.
-	SkipValidation *bool `json:"skipValidation" yaml:"skipValidation"`
-}
-
-// An error returned during the validation phase.
-type ValidationError struct {
-	// The error message.
-	Message *string `json:"message" yaml:"message"`
-	// The construct which emitted the error.
-	Source Construct `json:"source" yaml:"source"`
 }
 
