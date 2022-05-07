@@ -12,7 +12,7 @@
 
 Constructs are classes which define a "piece of system state". Constructs can be composed together to form higher-level building blocks which represent more complex state.
 
-Constructs are often used to represent the _desired state_ of cloud applications. For example, in the AWS CDK, which is used to define the desired state for AWS infrastructure using CloudFormation, the lowest-level construct represents a _resource definition_ in a CloudFormation template. These resources are composed to represent higher-level logical units of a cloud application, etc.
+Constructs are often used to represent the *desired state* of cloud applications. For example, in the AWS CDK, which is used to define the desired state for AWS infrastructure using CloudFormation, the lowest-level construct represents a *resource definition* in a CloudFormation template. These resources are composed to represent higher-level logical units of a cloud application, etc.
 
 ## Contributing
 
@@ -26,4 +26,3 @@ development environment and submit code.
 ## License
 
 This project is distributed under the [Apache License, Version 2.0](./LICENSE).
-
