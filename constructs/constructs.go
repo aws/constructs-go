@@ -125,11 +125,11 @@ const (
 //
 // Example:
 //   // Usage
-//   const roots = DependableTrait.get(construct).dependencyRoots;
+//   const roots = Dependable.of(construct).dependencyRoots;
 //
 //   // Definition
-//   DependableTrait.implement(construct, {
-//     get dependencyRoots() { return []; }
+//   Dependable.implement(construct, {
+//         dependencyRoots: [construct],
 //   });
 //
 // Experimental.
@@ -306,7 +306,7 @@ func (j *jsiiProxy_IConstruct) Node() Node {
 // Trait marker for classes that can be depended upon.
 //
 // The presence of this interface indicates that an object has
-// an `IDependableTrait` implementation.
+// an `IDependable` implementation.
 //
 // This interface can be used to take an (ordering) dependency on a set of
 // constructs. An ordering dependency implies that the resources represented by
