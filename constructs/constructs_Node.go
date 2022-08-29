@@ -1,8 +1,8 @@
-// A programming model for software-defined state
+// A programming model for composable configuration
 package constructs
 
 import (
-	_init_ "github.com/aws/constructs-go/constructs/v10/jsii"
+	_init_ "github.com/aws/constructs-go/constructs/v3/jsii"
 	_jsii_ "github.com/aws/jsii-runtime-go/runtime"
 )
 
@@ -42,11 +42,11 @@ type Node interface {
 	// Returns: a construct or undefined if there is no default child.
 	DefaultChild() IConstruct
 	SetDefaultChild(val IConstruct)
-	// Return all dependencies registered on this node (non-recursive).
-	Dependencies() *[]IConstruct
+	// Return all dependencies registered on this node or any of its children.
+	Dependencies() *[]*Dependency
 	// The id of this construct within the current scope.
 	//
-	// This is a a scope-unique id. To obtain an app-unique id for this construct, use `addr`.
+	// This is a a scope-unique id. To obtain an app-unique id for this construct, use `uniqueId`.
 	Id() *string
 	// Returns true if this construct or the scopes in which it is defined are locked.
 	Locked() *bool
@@ -72,21 +72,45 @@ type Node interface {
 	// be the current construct and the first element will be the root of the
 	// tree.
 	Scopes() *[]IConstruct
-	// Add an ordering dependency on another construct.
+	// A tree-global unique alphanumeric identifier for this construct.
 	//
-	// An `IDependable`.
-	AddDependency(deps ...IDependable)
+	// Includes
+	// all components of the tree.
+	// Deprecated: please avoid using this property and use `addr` to form unique names.
+	// This algorithm uses MD5, which is not FIPS-complient and also excludes the
+	// identity of the root construct from the calculation.
+	UniqueId() *string
+	// Add an ordering dependency on another Construct.
+	//
+	// All constructs in the dependency's scope will be deployed before any
+	// construct in this construct's scope.
+	AddDependency(dependencies ...IConstruct)
+	// Adds an { "error": <message> } metadata entry to this construct.
+	//
+	// The toolkit will fail synthesis when errors are reported.
+	AddError(message *string)
+	// Adds a { "info": <message> } metadata entry to this construct.
+	//
+	// The toolkit will display the info message when apps are synthesized.
+	AddInfo(message *string)
 	// Adds a metadata entry to this construct.
 	//
 	// Entries are arbitrary values and will also include a stack trace to allow tracing back to
 	// the code location for when the entry was added. It can be used, for example, to include source
 	// mapping in CloudFormation templates to improve diagnostics.
-	AddMetadata(type_ *string, data interface{}, options *MetadataOptions)
+	AddMetadata(type_ *string, data interface{}, fromFunction interface{})
 	// Adds a validation to this construct.
 	//
 	// When `node.validate()` is called, the `validate()` method will be called on
 	// all validations and all errors will be returned.
 	AddValidation(validation IValidation)
+	// Adds a { "warning": <message> } metadata entry to this construct.
+	//
+	// The toolkit will display the warning when an app is synthesized, or fail
+	// if run in --strict mode.
+	AddWarning(message *string)
+	// Applies the aspect to this Constructs node.
+	ApplyAspect(aspect IAspect)
 	// Return this construct and all of its children in the given order.
 	FindAll(order ConstructOrder) *[]IConstruct
 	// Return a direct child by id.
@@ -95,16 +119,15 @@ type Node interface {
 	//
 	// Returns: Child with the given id.
 	FindChild(id *string) IConstruct
-	// Locks this construct from allowing more children to be added.
-	//
-	// After this
-	// call, no more children can be added to this construct or to any children.
-	Lock()
+	// Invokes "prepare" on all constructs (depth-first, post-order) in the tree under `node`.
+	Prepare()
 	// This can be used to set contextual values.
 	//
 	// Context must be set before any children are added, since children may consult context info during construction.
 	// If the key already exists, it will be overridden.
 	SetContext(key *string, value interface{})
+	// Synthesizes a CloudAssembly from a construct tree.
+	Synthesize(options *SynthesisOptions)
 	// Return a direct child by id, or undefined.
 	//
 	// Returns: the child if found, or undefined.
@@ -120,14 +143,10 @@ type Node interface {
 	// Returns: Whether a child with the given name was deleted.
 	// Experimental.
 	TryRemoveChild(childName *string) *bool
-	// Validates this construct.
+	// Validates tree (depth-first, pre-order) and returns the list of all errors.
 	//
-	// Invokes the `validate()` method on all validations added through
-	// `addValidation()`.
-	//
-	// Returns: an array of validation error messages associated with this
-	// construct.
-	Validate() *[]*string
+	// An empty list indicates that there are no errors.
+	Validate() *[]*ValidationError
 }
 
 // The jsii proxy struct for Node
@@ -165,8 +184,8 @@ func (j *jsiiProxy_Node) DefaultChild() IConstruct {
 	return returns
 }
 
-func (j *jsiiProxy_Node) Dependencies() *[]IConstruct {
-	var returns *[]IConstruct
+func (j *jsiiProxy_Node) Dependencies() *[]*Dependency {
+	var returns *[]*Dependency
 	_jsii_.Get(
 		j,
 		"dependencies",
@@ -245,6 +264,16 @@ func (j *jsiiProxy_Node) Scopes() *[]IConstruct {
 	return returns
 }
 
+func (j *jsiiProxy_Node) UniqueId() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"uniqueId",
+		&returns,
+	)
+	return returns
+}
+
 
 func NewNode(host Construct, scope IConstruct, id *string) Node {
 	_init_.Initialize()
@@ -279,7 +308,6 @@ func (j *jsiiProxy_Node) SetDefaultChild(val IConstruct) {
 }
 
 // Returns the node associated with a construct.
-// Deprecated: use `construct.node` instead
 func Node_Of(construct IConstruct) Node {
 	_init_.Initialize()
 
@@ -306,9 +334,9 @@ func Node_PATH_SEP() *string {
 	return returns
 }
 
-func (n *jsiiProxy_Node) AddDependency(deps ...IDependable) {
+func (n *jsiiProxy_Node) AddDependency(dependencies ...IConstruct) {
 	args := []interface{}{}
-	for _, a := range deps {
+	for _, a := range dependencies {
 		args = append(args, a)
 	}
 
@@ -319,11 +347,27 @@ func (n *jsiiProxy_Node) AddDependency(deps ...IDependable) {
 	)
 }
 
-func (n *jsiiProxy_Node) AddMetadata(type_ *string, data interface{}, options *MetadataOptions) {
+func (n *jsiiProxy_Node) AddError(message *string) {
+	_jsii_.InvokeVoid(
+		n,
+		"addError",
+		[]interface{}{message},
+	)
+}
+
+func (n *jsiiProxy_Node) AddInfo(message *string) {
+	_jsii_.InvokeVoid(
+		n,
+		"addInfo",
+		[]interface{}{message},
+	)
+}
+
+func (n *jsiiProxy_Node) AddMetadata(type_ *string, data interface{}, fromFunction interface{}) {
 	_jsii_.InvokeVoid(
 		n,
 		"addMetadata",
-		[]interface{}{type_, data, options},
+		[]interface{}{type_, data, fromFunction},
 	)
 }
 
@@ -332,6 +376,22 @@ func (n *jsiiProxy_Node) AddValidation(validation IValidation) {
 		n,
 		"addValidation",
 		[]interface{}{validation},
+	)
+}
+
+func (n *jsiiProxy_Node) AddWarning(message *string) {
+	_jsii_.InvokeVoid(
+		n,
+		"addWarning",
+		[]interface{}{message},
+	)
+}
+
+func (n *jsiiProxy_Node) ApplyAspect(aspect IAspect) {
+	_jsii_.InvokeVoid(
+		n,
+		"applyAspect",
+		[]interface{}{aspect},
 	)
 }
 
@@ -361,10 +421,10 @@ func (n *jsiiProxy_Node) FindChild(id *string) IConstruct {
 	return returns
 }
 
-func (n *jsiiProxy_Node) Lock() {
+func (n *jsiiProxy_Node) Prepare() {
 	_jsii_.InvokeVoid(
 		n,
-		"lock",
+		"prepare",
 		nil, // no parameters
 	)
 }
@@ -374,6 +434,14 @@ func (n *jsiiProxy_Node) SetContext(key *string, value interface{}) {
 		n,
 		"setContext",
 		[]interface{}{key, value},
+	)
+}
+
+func (n *jsiiProxy_Node) Synthesize(options *SynthesisOptions) {
+	_jsii_.InvokeVoid(
+		n,
+		"synthesize",
+		[]interface{}{options},
 	)
 }
 
@@ -416,8 +484,8 @@ func (n *jsiiProxy_Node) TryRemoveChild(childName *string) *bool {
 	return returns
 }
 
-func (n *jsiiProxy_Node) Validate() *[]*string {
-	var returns *[]*string
+func (n *jsiiProxy_Node) Validate() *[]*ValidationError {
+	var returns *[]*ValidationError
 
 	_jsii_.Invoke(
 		n,
