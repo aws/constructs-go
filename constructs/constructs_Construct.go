@@ -1,8 +1,8 @@
-// A programming model for composable configuration
+// A programming model for software-defined state
 package constructs
 
 import (
-	_init_ "github.com/aws/constructs-go/constructs/v3/jsii"
+	_init_ "github.com/aws/constructs-go/constructs/v10/jsii"
 	_jsii_ "github.com/aws/jsii-runtime-go/runtime"
 )
 
@@ -12,29 +12,8 @@ import (
 // another construct.
 type Construct interface {
 	IConstruct
-	// Perform final modifications before synthesis.
-	//
-	// This method can be implemented by derived constructs in order to perform
-	// final changes before synthesis. prepare() will be called after child
-	// constructs have been prepared.
-	//
-	// This is an advanced framework feature. Only use this if you
-	// understand the implications.
-	OnPrepare()
-	// Allows this construct to emit artifacts into the cloud assembly during synthesis.
-	//
-	// This method is usually implemented by framework-level constructs such as `Stack` and `Asset`
-	// as they participate in synthesizing the cloud assembly.
-	OnSynthesize(session ISynthesisSession)
-	// Validate the current construct.
-	//
-	// This method can be implemented by derived constructs in order to perform
-	// validation logic. It is called on all constructs before synthesis.
-	//
-	// Returns: An array of validation error messages, or an empty array if there the construct is valid.
-	// Deprecated: use `Node.addValidation()` to subscribe validation functions on this construct
-	// instead of overriding this method.
-	OnValidate() *[]*string
+	// The tree node.
+	Node() Node
 	// Returns a string representation of this construct.
 	ToString() *string
 }
@@ -44,18 +23,29 @@ type jsiiProxy_Construct struct {
 	jsiiProxy_IConstruct
 }
 
+func (j *jsiiProxy_Construct) Node() Node {
+	var returns Node
+	_jsii_.Get(
+		j,
+		"node",
+		&returns,
+	)
+	return returns
+}
+
+
 // Creates a new construct node.
-func NewConstruct(scope Construct, id *string, options *ConstructOptions) Construct {
+func NewConstruct(scope Construct, id *string) Construct {
 	_init_.Initialize()
 
-	if err := validateNewConstructParameters(scope, id, options); err != nil {
+	if err := validateNewConstructParameters(scope, id); err != nil {
 		panic(err)
 	}
 	j := jsiiProxy_Construct{}
 
 	_jsii_.Create(
 		"constructs.Construct",
-		[]interface{}{scope, id, options},
+		[]interface{}{scope, id},
 		&j,
 	)
 
@@ -63,42 +53,45 @@ func NewConstruct(scope Construct, id *string, options *ConstructOptions) Constr
 }
 
 // Creates a new construct node.
-func NewConstruct_Override(c Construct, scope Construct, id *string, options *ConstructOptions) {
+func NewConstruct_Override(c Construct, scope Construct, id *string) {
 	_init_.Initialize()
 
 	_jsii_.Create(
 		"constructs.Construct",
-		[]interface{}{scope, id, options},
+		[]interface{}{scope, id},
 		c,
 	)
 }
 
-func (c *jsiiProxy_Construct) OnPrepare() {
-	_jsii_.InvokeVoid(
-		c,
-		"onPrepare",
-		nil, // no parameters
-	)
-}
+// Checks if `x` is a construct.
+//
+// Use this method instead of `instanceof` to properly detect `Construct`
+// instances, even when the construct library is symlinked.
+//
+// Explanation: in JavaScript, multiple copies of the `constructs` library on
+// disk are seen as independent, completely different libraries. As a
+// consequence, the class `Construct` in each copy of the `constructs` library
+// is seen as a different class, and an instance of one class will not test as
+// `instanceof` the other class. `npm install` will not create installations
+// like this, but users may manually symlink construct libraries together or
+// use a monorepo tool: in those cases, multiple copies of the `constructs`
+// library can be accidentally installed, and `instanceof` will behave
+// unpredictably. It is safest to avoid using `instanceof`, and using
+// this type-testing method instead.
+//
+// Returns: true if `x` is an object created from a class which extends `Construct`.
+func Construct_IsConstruct(x interface{}) *bool {
+	_init_.Initialize()
 
-func (c *jsiiProxy_Construct) OnSynthesize(session ISynthesisSession) {
-	if err := c.validateOnSynthesizeParameters(session); err != nil {
+	if err := validateConstruct_IsConstructParameters(x); err != nil {
 		panic(err)
 	}
-	_jsii_.InvokeVoid(
-		c,
-		"onSynthesize",
-		[]interface{}{session},
-	)
-}
+	var returns *bool
 
-func (c *jsiiProxy_Construct) OnValidate() *[]*string {
-	var returns *[]*string
-
-	_jsii_.Invoke(
-		c,
-		"onValidate",
-		nil, // no parameters
+	_jsii_.StaticInvoke(
+		"constructs.Construct",
+		"isConstruct",
+		[]interface{}{x},
 		&returns,
 	)
 
