@@ -10,12 +10,12 @@ import (
 	_jsii_ "github.com/aws/jsii-runtime-go/runtime"
 )
 
-//go:embed constructs-3.4.201.tgz
+//go:embed constructs-10.1.207.tgz
 var tarball []byte
 
 // Initialize loads the necessary packages in the @jsii/kernel to support the enclosing module.
 // The implementation is idempotent (and hence safe to be called over and over).
 func Initialize() {
 	// Load this library into the kernel
-	_jsii_.Load("constructs", "3.4.201", tarball)
+	_jsii_.Load("constructs", "10.1.207", tarball)
 }
