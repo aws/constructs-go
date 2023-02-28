@@ -1,4 +1,4 @@
-// A programming model for composable configuration
+// A programming model for software-defined state
 package constructs
 
 
