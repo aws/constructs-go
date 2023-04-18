@@ -95,6 +95,12 @@ type Node interface {
 	//
 	// Returns: Child with the given id.
 	FindChild(id *string) IConstruct
+	// Retrieves a value from tree context if present. Otherwise, would throw an error.
+	//
+	// Context is usually initialized at the root, but can be overridden at any point in the tree.
+	//
+	// Returns: The context value or throws error if there is no context value for this key.
+	GetContext(key *string) interface{}
 	// Locks this construct from allowing more children to be added.
 	//
 	// After this
@@ -113,7 +119,7 @@ type Node interface {
 	//
 	// Context is usually initialized at the root, but can be overridden at any point in the tree.
 	//
-	// Returns: The context value or `undefined` if there is no context value for thie key.
+	// Returns: The context value or `undefined` if there is no context value for this key.
 	TryGetContext(key *string) interface{}
 	// Remove the child with the given name, if present.
 	//
@@ -370,6 +376,22 @@ func (n *jsiiProxy_Node) FindChild(id *string) IConstruct {
 		n,
 		"findChild",
 		[]interface{}{id},
+		&returns,
+	)
+
+	return returns
+}
+
+func (n *jsiiProxy_Node) GetContext(key *string) interface{} {
+	if err := n.validateGetContextParameters(key); err != nil {
+		panic(err)
+	}
+	var returns interface{}
+
+	_jsii_.Invoke(
+		n,
+		"getContext",
+		[]interface{}{key},
 		&returns,
 	)
 

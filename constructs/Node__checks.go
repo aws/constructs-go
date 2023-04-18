@@ -41,6 +41,14 @@ func (n *jsiiProxy_Node) validateFindChildParameters(id *string) error {
 	return nil
 }
 
+func (n *jsiiProxy_Node) validateGetContextParameters(key *string) error {
+	if key == nil {
+		return fmt.Errorf("parameter key is required, but nil was provided")
+	}
+
+	return nil
+}
+
 func (n *jsiiProxy_Node) validateSetContextParameters(key *string, value interface{}) error {
 	if key == nil {
 		return fmt.Errorf("parameter key is required, but nil was provided")

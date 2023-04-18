@@ -101,6 +101,7 @@ func init() {
 			_jsii_.MemberProperty{JsiiProperty: "dependencies", GoGetter: "Dependencies"},
 			_jsii_.MemberMethod{JsiiMethod: "findAll", GoMethod: "FindAll"},
 			_jsii_.MemberMethod{JsiiMethod: "findChild", GoMethod: "FindChild"},
+			_jsii_.MemberMethod{JsiiMethod: "getContext", GoMethod: "GetContext"},
 			_jsii_.MemberProperty{JsiiProperty: "id", GoGetter: "Id"},
 			_jsii_.MemberMethod{JsiiMethod: "lock", GoMethod: "Lock"},
 			_jsii_.MemberProperty{JsiiProperty: "locked", GoGetter: "Locked"},

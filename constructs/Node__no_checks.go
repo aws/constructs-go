@@ -17,6 +17,10 @@ func (n *jsiiProxy_Node) validateFindChildParameters(id *string) error {
 	return nil
 }
 
+func (n *jsiiProxy_Node) validateGetContextParameters(key *string) error {
+	return nil
+}
+
 func (n *jsiiProxy_Node) validateSetContextParameters(key *string, value interface{}) error {
 	return nil
 }
