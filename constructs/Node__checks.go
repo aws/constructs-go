@@ -1,6 +1,6 @@
 //go:build !no_runtime_type_checking
 
-// A programming model for software-defined state
+// A programming model for composable configuration
 package constructs
 
 import (
@@ -9,17 +9,29 @@ import (
 	_jsii_ "github.com/aws/jsii-runtime-go/runtime"
 )
 
-func (n *jsiiProxy_Node) validateAddMetadataParameters(type_ *string, data interface{}, options *MetadataOptions) error {
+func (n *jsiiProxy_Node) validateAddErrorParameters(message *string) error {
+	if message == nil {
+		return fmt.Errorf("parameter message is required, but nil was provided")
+	}
+
+	return nil
+}
+
+func (n *jsiiProxy_Node) validateAddInfoParameters(message *string) error {
+	if message == nil {
+		return fmt.Errorf("parameter message is required, but nil was provided")
+	}
+
+	return nil
+}
+
+func (n *jsiiProxy_Node) validateAddMetadataParameters(type_ *string, data interface{}) error {
 	if type_ == nil {
 		return fmt.Errorf("parameter type_ is required, but nil was provided")
 	}
 
 	if data == nil {
 		return fmt.Errorf("parameter data is required, but nil was provided")
-	}
-
-	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
-		return err
 	}
 
 	return nil
@@ -33,17 +45,25 @@ func (n *jsiiProxy_Node) validateAddValidationParameters(validation IValidation)
 	return nil
 }
 
-func (n *jsiiProxy_Node) validateFindChildParameters(id *string) error {
-	if id == nil {
-		return fmt.Errorf("parameter id is required, but nil was provided")
+func (n *jsiiProxy_Node) validateAddWarningParameters(message *string) error {
+	if message == nil {
+		return fmt.Errorf("parameter message is required, but nil was provided")
 	}
 
 	return nil
 }
 
-func (n *jsiiProxy_Node) validateGetContextParameters(key *string) error {
-	if key == nil {
-		return fmt.Errorf("parameter key is required, but nil was provided")
+func (n *jsiiProxy_Node) validateApplyAspectParameters(aspect IAspect) error {
+	if aspect == nil {
+		return fmt.Errorf("parameter aspect is required, but nil was provided")
+	}
+
+	return nil
+}
+
+func (n *jsiiProxy_Node) validateFindChildParameters(id *string) error {
+	if id == nil {
+		return fmt.Errorf("parameter id is required, but nil was provided")
 	}
 
 	return nil
@@ -56,6 +76,17 @@ func (n *jsiiProxy_Node) validateSetContextParameters(key *string, value interfa
 
 	if value == nil {
 		return fmt.Errorf("parameter value is required, but nil was provided")
+	}
+
+	return nil
+}
+
+func (n *jsiiProxy_Node) validateSynthesizeParameters(options *SynthesisOptions) error {
+	if options == nil {
+		return fmt.Errorf("parameter options is required, but nil was provided")
+	}
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
+		return err
 	}
 
 	return nil
