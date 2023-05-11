@@ -1,4 +1,3 @@
-// A programming model for composable configuration
 package constructs
 
 
