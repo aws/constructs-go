@@ -4,11 +4,11 @@ package constructs
 
 // Building without runtime type checking enabled, so all the below just return nil
 
-func validateConstruct_IsConstructParameters(x interface{}) error {
+func (c *jsiiProxy_Construct) validateOnSynthesizeParameters(session ISynthesisSession) error {
 	return nil
 }
 
-func validateNewConstructParameters(scope Construct, id *string) error {
+func validateNewConstructParameters(scope Construct, id *string, options *ConstructOptions) error {
 	return nil
 }
 
