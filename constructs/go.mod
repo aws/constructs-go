@@ -1,4 +1,4 @@
-module github.com/aws/constructs-go/constructs/v10
+module github.com/aws/constructs-go/constructs/v3
 
 go 1.18
 
