@@ -7,9 +7,10 @@ type MetadataEntry struct {
 	Data interface{} `field:"required" json:"data" yaml:"data"`
 	// The metadata entry type.
 	Type *string `field:"required" json:"type" yaml:"type"`
-	// Stack trace at the point of adding the metadata.
+	// Stack trace.
 	//
-	// Only available if `addMetadata()` is called with `stackTrace: true`.
+	// Can be omitted by setting the context key
+	// `ConstructMetadata.DISABLE_STACK_TRACE_IN_METADATA` to 1.
 	Trace *[]*string `field:"optional" json:"trace" yaml:"trace"`
 }
 
