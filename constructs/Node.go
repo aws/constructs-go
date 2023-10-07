@@ -45,7 +45,7 @@ type Node interface {
 	Dependencies() *[]IConstruct
 	// The id of this construct within the current scope.
 	//
-	// This is a a scope-unique id. To obtain an app-unique id for this construct, use `addr`.
+	// This is a scope-unique id. To obtain an app-unique id for this construct, use `addr`.
 	Id() *string
 	// Returns true if this construct or the scopes in which it is defined are locked.
 	Locked() *bool
@@ -94,6 +94,12 @@ type Node interface {
 	//
 	// Returns: Child with the given id.
 	FindChild(id *string) IConstruct
+	// Retrieves the all context of a node from tree context.
+	//
+	// Context is usually initialized at the root, but can be overridden at any point in the tree.
+	//
+	// Returns: The context object or an empty object if there is discovered context.
+	GetAllContext(defaults *map[string]interface{}) interface{}
 	// Retrieves a value from tree context if present. Otherwise, would throw an error.
 	//
 	// Context is usually initialized at the root, but can be overridden at any point in the tree.
@@ -375,6 +381,19 @@ func (n *jsiiProxy_Node) FindChild(id *string) IConstruct {
 		n,
 		"findChild",
 		[]interface{}{id},
+		&returns,
+	)
+
+	return returns
+}
+
+func (n *jsiiProxy_Node) GetAllContext(defaults *map[string]interface{}) interface{} {
+	var returns interface{}
+
+	_jsii_.Invoke(
+		n,
+		"getAllContext",
+		[]interface{}{defaults},
 		&returns,
 	)
 
