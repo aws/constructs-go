@@ -80,6 +80,8 @@ type Node interface {
 	// Entries are arbitrary values and will also include a stack trace to allow tracing back to
 	// the code location for when the entry was added. It can be used, for example, to include source
 	// mapping in CloudFormation templates to improve diagnostics.
+	// Note that construct metadata is not the same as CloudFormation resource metadata and is never written to the CloudFormation template.
+	// The metadata entries are written to the Cloud Assembly Manifest if the `treeMetadata` property is specified in the props of the App that contains this Construct.
 	AddMetadata(type_ *string, data interface{}, options *MetadataOptions)
 	// Adds a validation to this construct.
 	//
