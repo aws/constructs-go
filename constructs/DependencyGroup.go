@@ -9,11 +9,9 @@ import (
 //
 // This class can be used when a set of constructs which are disjoint in the
 // construct tree needs to be combined to be used as a single dependable.
-// Experimental.
 type DependencyGroup interface {
 	IDependable
 	// Add a construct to the dependency roots.
-	// Experimental.
 	Add(scopes ...IDependable)
 }
 
@@ -22,7 +20,6 @@ type jsiiProxy_DependencyGroup struct {
 	jsiiProxy_IDependable
 }
 
-// Experimental.
 func NewDependencyGroup(deps ...IDependable) DependencyGroup {
 	_init_.Initialize()
 
@@ -42,7 +39,6 @@ func NewDependencyGroup(deps ...IDependable) DependencyGroup {
 	return &j
 }
 
-// Experimental.
 func NewDependencyGroup_Override(d DependencyGroup, deps ...IDependable) {
 	_init_.Initialize()
 

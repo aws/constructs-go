@@ -62,6 +62,22 @@ func NewConstruct_Override(c Construct, scope Construct, id *string) {
 	)
 }
 
+// Creates a new root construct node.
+func Construct_CreateRoot(id *string) Construct {
+	_init_.Initialize()
+
+	var returns Construct
+
+	_jsii_.StaticInvoke(
+		"constructs.Construct",
+		"createRoot",
+		[]interface{}{id},
+		&returns,
+	)
+
+	return returns
+}
+
 // Checks if `x` is a construct.
 //
 // Use this method instead of `instanceof` to properly detect `Construct`

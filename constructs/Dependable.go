@@ -22,13 +22,11 @@ import (
 //         dependencyRoots: [construct],
 //   });
 //
-// Experimental.
 type Dependable interface {
 	// The set of constructs that form the root of this dependable.
 	//
 	// All resources under all returned constructs are included in the ordering
 	// dependency.
-	// Experimental.
 	DependencyRoots() *[]IConstruct
 }
 
@@ -48,7 +46,6 @@ func (j *jsiiProxy_Dependable) DependencyRoots() *[]IConstruct {
 }
 
 
-// Experimental.
 func NewDependable_Override(d Dependable) {
 	_init_.Initialize()
 
@@ -80,7 +77,6 @@ func Dependable_Get(instance IDependable) Dependable {
 }
 
 // Turn any object into an IDependable.
-// Experimental.
 func Dependable_Implement(instance IDependable, trait Dependable) {
 	_init_.Initialize()
 
@@ -95,7 +91,6 @@ func Dependable_Implement(instance IDependable, trait Dependable) {
 }
 
 // Return the matching Dependable for the given class instance.
-// Experimental.
 func Dependable_Of(instance IDependable) Dependable {
 	_init_.Initialize()
 
