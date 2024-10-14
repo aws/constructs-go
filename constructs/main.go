@@ -122,4 +122,17 @@ func init() {
 			return &jsiiProxy_Node{}
 		},
 	)
+	_jsii_.RegisterClass(
+		"constructs.RootConstruct",
+		reflect.TypeOf((*RootConstruct)(nil)).Elem(),
+		[]_jsii_.Member{
+			_jsii_.MemberProperty{JsiiProperty: "node", GoGetter: "Node"},
+			_jsii_.MemberMethod{JsiiMethod: "toString", GoMethod: "ToString"},
+		},
+		func() interface{} {
+			j := jsiiProxy_RootConstruct{}
+			_jsii_.InitJsiiProxy(&j.jsiiProxy_Construct)
+			return &j
+		},
+	)
 }
