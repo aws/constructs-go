@@ -7,6 +7,13 @@ import (
 // Represents a construct.
 type IConstruct interface {
 	IDependable
+	// Applies one or more mixins to this construct.
+	//
+	// Mixins are applied in order. The list of constructs is captured at the
+	// start of the call, so constructs added by a mixin will not be visited.
+	//
+	// Returns: This construct for chaining.
+	With(mixins ...IMixin) IConstruct
 	// The tree node.
 	Node() Node
 }
@@ -14,6 +21,24 @@ type IConstruct interface {
 // The jsii proxy for IConstruct
 type jsiiProxy_IConstruct struct {
 	jsiiProxy_IDependable
+}
+
+func (i *jsiiProxy_IConstruct) With(mixins ...IMixin) IConstruct {
+	args := []interface{}{}
+	for _, a := range mixins {
+		args = append(args, a)
+	}
+
+	var returns IConstruct
+
+	_jsii_.Invoke(
+		i,
+		"with",
+		args,
+		&returns,
+	)
+
+	return returns
 }
 
 func (j *jsiiProxy_IConstruct) Node() Node {

@@ -14,6 +14,7 @@ func init() {
 		[]_jsii_.Member{
 			_jsii_.MemberProperty{JsiiProperty: "node", GoGetter: "Node"},
 			_jsii_.MemberMethod{JsiiMethod: "toString", GoMethod: "ToString"},
+			_jsii_.MemberMethod{JsiiMethod: "with", GoMethod: "With"},
 		},
 		func() interface{} {
 			j := jsiiProxy_Construct{}
@@ -56,6 +57,7 @@ func init() {
 		reflect.TypeOf((*IConstruct)(nil)).Elem(),
 		[]_jsii_.Member{
 			_jsii_.MemberProperty{JsiiProperty: "node", GoGetter: "Node"},
+			_jsii_.MemberMethod{JsiiMethod: "with", GoMethod: "With"},
 		},
 		func() interface{} {
 			j := jsiiProxy_IConstruct{}
@@ -69,6 +71,17 @@ func init() {
 		nil, // no members
 		func() interface{} {
 			return &jsiiProxy_IDependable{}
+		},
+	)
+	_jsii_.RegisterInterface(
+		"constructs.IMixin",
+		reflect.TypeOf((*IMixin)(nil)).Elem(),
+		[]_jsii_.Member{
+			_jsii_.MemberMethod{JsiiMethod: "applyTo", GoMethod: "ApplyTo"},
+			_jsii_.MemberMethod{JsiiMethod: "supports", GoMethod: "Supports"},
+		},
+		func() interface{} {
+			return &jsiiProxy_IMixin{}
 		},
 	)
 	_jsii_.RegisterInterface(
@@ -128,6 +141,7 @@ func init() {
 		[]_jsii_.Member{
 			_jsii_.MemberProperty{JsiiProperty: "node", GoGetter: "Node"},
 			_jsii_.MemberMethod{JsiiMethod: "toString", GoMethod: "ToString"},
+			_jsii_.MemberMethod{JsiiMethod: "with", GoMethod: "With"},
 		},
 		func() interface{} {
 			j := jsiiProxy_RootConstruct{}
