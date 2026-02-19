@@ -140,6 +140,15 @@ type Node interface {
 	// Returns: an array of validation error messages associated with this
 	// construct.
 	Validate() *[]*string
+	// Applies one or more mixins to this construct.
+	//
+	// Mixins are applied in order. The list of constructs is captured at the
+	// start of the call, so constructs added by a mixin will not be visited.
+	// Use multiple `with()` calls if subsequent mixins should apply to added
+	// constructs.
+	//
+	// Returns: This construct for chaining.
+	With(mixins ...IMixin) IConstruct
 }
 
 // The jsii proxy struct for Node
@@ -491,6 +500,24 @@ func (n *jsiiProxy_Node) Validate() *[]*string {
 		n,
 		"validate",
 		nil, // no parameters
+		&returns,
+	)
+
+	return returns
+}
+
+func (n *jsiiProxy_Node) With(mixins ...IMixin) IConstruct {
+	args := []interface{}{}
+	for _, a := range mixins {
+		args = append(args, a)
+	}
+
+	var returns IConstruct
+
+	_jsii_.Invoke(
+		n,
+		"with",
+		args,
 		&returns,
 	)
 
