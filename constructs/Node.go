@@ -41,7 +41,10 @@ type Node interface {
 	// Returns: a construct or undefined if there is no default child.
 	DefaultChild() IConstruct
 	SetDefaultChild(val IConstruct)
-	// Return all dependencies registered on this node (non-recursive).
+	// Constructs that this construct depends on directly.
+	//
+	// This expands the sets of `Dependables` to the set of `Constructs` that they
+	// represent.
 	Dependencies() *[]IConstruct
 	// The id of this construct within the current scope.
 	//
@@ -71,9 +74,21 @@ type Node interface {
 	// be the current construct and the first element will be the root of the
 	// tree.
 	Scopes() *[]IConstruct
-	// Add an ordering dependency on another construct.
+	// Add an ordering dependency on a Dependable (a construct or set of constructs).
 	//
-	// An `IDependable`.
+	// It is up to the target document language to decide what an ordering
+	// relationship means and how it should be rendered; for example, in the AWS
+	// CDK for CloudFormation it means a dependency from every resource in scope
+	// of the current construct to every resource in scope of the target set
+	// of constructs, that get realized as either stack dependencies or
+	// `DependsOn` relationships in the synthesized template.
+	//
+	// `IDependable` is a marker interface that indicates that a class has used
+	// `Dependable.implement()` to implement the `IDependable` interface. It
+	// can be used to make the target object represent more than one set of
+	// constructs at a time. For example, a `DependencyGroup` uses this
+	// interface to represent an explicit list of 0 or more constructs that should
+	// be involved in the dependency relationship.
 	AddDependency(deps ...IDependable)
 	// Adds a metadata entry to this construct.
 	//
@@ -113,6 +128,11 @@ type Node interface {
 	// After this
 	// call, no more children can be added to this construct or to any children.
 	Lock()
+	// Remove an ordering dependency on a Dependenable (a construct or set of constructs).
+	//
+	// This removes any dependency added using `node.addDependency()`. It must
+	// use the exact same object that was involved in the `addDependency()` call.
+	RemoveDependency(deps ...IDependable)
 	// This can be used to set contextual values.
 	//
 	// Context must be set before any children are added, since children may consult context info during construction.
@@ -431,6 +451,19 @@ func (n *jsiiProxy_Node) Lock() {
 		n,
 		"lock",
 		nil, // no parameters
+	)
+}
+
+func (n *jsiiProxy_Node) RemoveDependency(deps ...IDependable) {
+	args := []interface{}{}
+	for _, a := range deps {
+		args = append(args, a)
+	}
+
+	_jsii_.InvokeVoid(
+		n,
+		"removeDependency",
+		args,
 	)
 }
 
