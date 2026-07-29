@@ -7,17 +7,29 @@ import (
 
 // Represents the construct node in the scope tree.
 type Node interface {
-	// Returns an opaque tree-unique address for this construct.
+	// An opaque, deterministic address for this construct, derived from its path.
 	//
-	// Addresses are 42 characters hexadecimal strings. They begin with "c8"
-	// followed by 40 lowercase hexadecimal characters (0-9a-f).
-	//
-	// Addresses are calculated using a SHA-1 of the components of the construct
-	// path.
+	// The address is a 42 character string: the prefix "c8" followed by 40
+	// lowercase hexadecimal characters (0-9a-f). It is a SHA-1 over the ids of
+	// the constructs on the path from the root of the tree down to this
+	// construct.
 	//
 	// To enable refactoring of construct trees, constructs with the ID `Default`
-	// will be excluded from the calculation. In those cases constructs in the
-	// same tree may have the same address.
+	// are excluded from the calculation. Within a tree, `a/Default/b` and `a/b`
+	// have the same address.
+	//
+	// This means the address is *not* guaranteed to identify a construct uniquely:
+	//
+	// - Any construct whose path is made up of the same ids has the same address.
+	//   Two trees that are shaped alike therefore hand out the same addresses.
+	// - As described above, a construct under a `Default` scope has the same
+	//   address as its counterpart outside of that scope.
+	// - The digest is of fixed width, so even distinct paths can in principle hash
+	//   to the same address. SHA-1 in particular is no longer collision resistant.
+	//
+	// Use an address to derive stable, deterministic names from the location of a
+	// construct in the tree. Do not use it as the identity of a construct:
+	// instead, compare construct instances or use the `path`.
 	//
 	// Example:
 	//   c83a2846e506bcc5f10682b564084bca2d275709ee
@@ -48,7 +60,8 @@ type Node interface {
 	Dependencies() *[]IConstruct
 	// The id of this construct within the current scope.
 	//
-	// This is a scope-unique id. To obtain an app-unique id for this construct, use `addr`.
+	// This is a scope-unique id. To obtain an id that reflects the full location
+	// of this construct in the tree, use `path` or `addr`.
 	Id() *string
 	// Returns true if this construct or the scopes in which it is defined are locked.
 	Locked() *bool
